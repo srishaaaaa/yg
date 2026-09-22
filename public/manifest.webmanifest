@@ -1,0 +1,37 @@
+{
+  "name": "YG ENTERPRISES Retail POS",
+  "short_name": "YG",
+  "description": "YG ENTERPRISES retail billing, barcode inventory, catalog, order, receipt, and invoice administration.",
+  "theme_color": "#7A1220",
+  "background_color": "#7A1220",
+  "display": "standalone",
+  "orientation": "any",
+  "start_url": "/",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/yg-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/yg-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/yg-icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/yg-icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
