@@ -159,6 +159,7 @@ export interface StoreSettings {
 
 interface SettingsState {
   settings: StoreSettings | null
+  settingsByBranch: Partial<Record<PosBranch, StoreSettings>>
   loading: boolean
   fetchSettings: (branch?: PosBranch) => Promise<void>
 }
@@ -549,6 +550,7 @@ export const useVariantModalStore = create<VariantModalState>()((set) => ({
 // --- Store Settings State ---
 export const useSettingsStore = create<SettingsState>()((set) => ({
   settings: null,
+  settingsByBranch: {},
   loading: false,
   fetchSettings: async (branch) => {
     set({ loading: true })
@@ -556,40 +558,44 @@ export const useSettingsStore = create<SettingsState>()((set) => ({
       const query = supabase.from('store_settings').select('*').limit(1)
       const { data, error } = branch ? await query.eq('branch', branch).single() : await query.single()
       if (!error && data) {
-        set({
-          settings: {
-            name: data.name,
-            ownerName: data.owner_name,
-            phone: data.phone,
-            email: data.email || '',
-            address: data.address,
-            businessType: data.business_type || '',
-            instagramId: data.instagram_id || '',
-            logoUrl: data.logo_url || null,
-            themeColor: data.theme_color || (branch === 'pos2' ? '#B8860B' : '#8B1A1A'),
-            gstEnabled: data.gst_enabled
-          },
+        const resolved: StoreSettings = {
+          name: data.name,
+          ownerName: data.owner_name,
+          phone: data.phone,
+          email: data.email || '',
+          address: data.address,
+          businessType: data.business_type || '',
+          instagramId: data.instagram_id || '',
+          logoUrl: data.logo_url || null,
+          themeColor: data.theme_color || (branch === 'pos2' ? '#B8860B' : '#8B1A1A'),
+          gstEnabled: data.gst_enabled
+        }
+        set((state) => ({
+          settings: resolved,
+          settingsByBranch: branch ? { ...state.settingsByBranch, [branch]: resolved } : state.settingsByBranch,
           loading: false
-        })
+        }))
         return
       }
     }
     // Fallback/Demo settings
-    set({
-      settings: {
-        name: BRAND_EN,
-        ownerName: BRAND_EN,
-        phone: BRAND_PHONE_DISPLAY,
-        email: '',
-        address: BRAND_ADDRESS,
-        businessType: '',
-        instagramId: '',
-        logoUrl: null,
-        themeColor: branch === 'pos2' ? '#B8860B' : '#8B1A1A',
-        gstEnabled: false
-      },
+    const fallback: StoreSettings = {
+      name: BRAND_EN,
+      ownerName: BRAND_EN,
+      phone: BRAND_PHONE_DISPLAY,
+      email: '',
+      address: BRAND_ADDRESS,
+      businessType: '',
+      instagramId: '',
+      logoUrl: null,
+      themeColor: branch === 'pos2' ? '#B8860B' : '#8B1A1A',
+      gstEnabled: false
+    }
+    set((state) => ({
+      settings: fallback,
+      settingsByBranch: branch ? { ...state.settingsByBranch, [branch]: fallback } : state.settingsByBranch,
       loading: false
-    })
+    }))
   }
 }))
 

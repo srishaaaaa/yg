@@ -1,12 +1,13 @@
 import './index.css'
 import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import { useAuthStore, useProductStore, useVariantStore, useAdminAuthStore } from './store/store'
+import { useAuthStore, useProductStore, useVariantStore, useAdminAuthStore, useSettingsStore } from './store/store'
 import { BRAND_EN } from './lib/brand'
 import { clearLocalOrders } from './lib/ordersFallback'
 import { isSupabaseConfigured, supabase } from './lib/supabase'
 import { LowStockAlarmModal } from './components/dashboard/LowStockAlarmModal'
 import { useLowStockMonitor } from './hooks/useLowStockMonitor'
+import { applyBranchThemeVars } from './lib/branchTheme'
 
 function lazyWithRetry<T extends React.ComponentType<any>>(
   factory: () => Promise<{ default: T }>
@@ -92,6 +93,8 @@ function AppShell() {
   const fetchProducts = useProductStore((state) => state.fetchProducts)
   const fetchVariants = useVariantStore((state) => state.fetchVariants)
   const { isLoggedIn, role } = useAdminAuthStore()
+  const fetchSettings = useSettingsStore((state) => state.fetchSettings)
+  const settingsByBranch = useSettingsStore((state) => state.settingsByBranch)
 
   const hasStaffOrAdminAccess = Boolean(isLoggedIn && (role === 'admin' || role === 'staff'))
   useLowStockMonitor(hasStaffOrAdminAccess, role)
@@ -99,6 +102,18 @@ function AppShell() {
   useEffect(() => {
     document.title = BRAND_EN
   }, [])
+
+  // Load both branches' Appearance colors once so the picked color themes
+  // that branch's admin UI everywhere (sidebar, Branch Hub, global aggregate
+  // pages) rather than just the Store Settings preview card.
+  useEffect(() => {
+    void fetchSettings('pos1')
+    void fetchSettings('pos2')
+  }, [fetchSettings])
+
+  useEffect(() => {
+    applyBranchThemeVars(settingsByBranch)
+  }, [settingsByBranch])
 
   useEffect(() => {
     if (!isSupabaseConfigured) {

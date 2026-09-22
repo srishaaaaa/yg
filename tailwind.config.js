@@ -28,16 +28,18 @@ export default {
           dark:    '#5C0D18',
           light:   '#F7E8E8',
         },
-        // Branch accents for POS 1 / POS 2 — stay inside the maroon/gold identity.
+        // Branch accents for POS 1 / POS 2 — resolved from CSS custom properties so
+        // each branch's Store Settings > Appearance color can override them at
+        // runtime (see src/index.css :root for defaults, src/App.tsx for the sync).
         posOne: {
-          DEFAULT: '#8B1A1A',
-          dark:    '#5C0D18',
-          light:   '#F7E8E8',
+          DEFAULT: 'var(--pos-one, #8B1A1A)',
+          dark:    'var(--pos-one-dark, #5C0D18)',
+          light:   'var(--pos-one-light, #F7E8E8)',
         },
         posTwo: {
-          DEFAULT: '#B8860B',
-          dark:    '#8A6508',
-          light:   '#FBF3DE',
+          DEFAULT: 'var(--pos-two, #B8860B)',
+          dark:    'var(--pos-two-dark, #8A6508)',
+          light:   'var(--pos-two-light, #FBF3DE)',
         },
         textMain:  '#1A0E0E',
         textMuted: '#6B7280',

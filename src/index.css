@@ -13,6 +13,15 @@
     --brand-surface: #FBFAF6;
     --brand-text-dark: #111111;
     --brand-text-muted: #6B7280;
+
+    /* Branch accent colors — overridden at runtime from each branch's
+       Store Settings > Appearance color (see src/App.tsx / src/lib/color.ts). */
+    --pos-one: #8B1A1A;
+    --pos-one-dark: #5C0D18;
+    --pos-one-light: #F7E8E8;
+    --pos-two: #B8860B;
+    --pos-two-dark: #8A6508;
+    --pos-two-light: #FBF3DE;
   }
 
   *, *::before, *::after {
