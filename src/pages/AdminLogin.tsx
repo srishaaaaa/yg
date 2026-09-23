@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { Lock, Eye, EyeOff, AlertCircle, ShieldCheck, Store, ShieldAlert } from 'lucide-react'
 import { useAdminAuthStore, type PosBranch } from '../store/store'
 import { BRAND_EN, BRAND_TA, BRAND_SUBTITLE, BRAND_LOGO } from '../lib/brand'
+import { branchLogo } from '../lib/branchTheme'
 import { useLangStore } from '../store/langStore'
 import { alarmSound } from '../lib/alarmAudio'
 
@@ -78,7 +79,7 @@ export default function AdminLogin() {
           <div className="my-auto flex flex-col items-center justify-center py-6 w-full">
             <div className="relative p-6 sm:p-8 rounded-3xl bg-[#5C0D18] border border-[#D4AF37]/40 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_40px_rgba(212,175,55,0.15)] flex items-center justify-center max-w-[280px] w-full aspect-square">
               <img
-                src={BRAND_LOGO}
+                src={loginTab === 'staff' ? branchLogo(branch) : BRAND_LOGO}
                 alt={BRAND_EN}
                 className="w-full h-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]"
               />
@@ -94,7 +95,7 @@ export default function AdminLogin() {
             {/* Mobile-only logo (since left panel is hidden on mobile) */}
             <div className="mb-3 lg:hidden flex justify-center">
               <div className="w-16 h-16 rounded-2xl bg-[#7A1220] border border-[#D4AF37]/50 p-2 flex items-center justify-center shadow-md">
-                <img src={BRAND_LOGO} alt={BRAND_EN} className="w-full h-full object-contain" />
+                <img src={loginTab === 'staff' ? branchLogo(branch) : BRAND_LOGO} alt={BRAND_EN} className="w-full h-full object-contain" />
               </div>
             </div>
             <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#B48811]">{BRAND_SUBTITLE}</p>
@@ -148,7 +149,7 @@ export default function AdminLogin() {
                       key={key}
                       type="button"
                       onClick={() => { setBranch(key); setError('') }}
-                      className={`rounded-xl border-2 px-3 py-2.5 text-left transition-colors cursor-pointer ${
+                      className={`flex items-center gap-2 rounded-xl border-2 px-3 py-2.5 text-left transition-colors cursor-pointer ${
                         branch === key
                           ? key === 'pos1'
                             ? 'border-posOne bg-posOne-light text-posOne-dark'
@@ -156,8 +157,13 @@ export default function AdminLogin() {
                           : 'border-[#E8D399] bg-[#FBFAF6] text-[#6B7280]'
                       }`}
                     >
-                      <p className="text-xs font-black">{label}</p>
-                      <p className="text-[10px] font-semibold opacity-80">{BRAND_EN}</p>
+                      <span className="w-8 h-8 shrink-0 rounded-lg bg-white border border-black/5 p-1 flex items-center justify-center overflow-hidden">
+                        <img src={branchLogo(key)} alt="" className="w-full h-full object-contain" />
+                      </span>
+                      <span>
+                        <p className="text-xs font-black">{label}</p>
+                        <p className="text-[10px] font-semibold opacity-80">{BRAND_EN}</p>
+                      </span>
                     </button>
                   ))}
                 </div>

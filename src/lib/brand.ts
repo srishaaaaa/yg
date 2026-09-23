@@ -5,6 +5,12 @@ export const BRAND_SUBTITLE = 'Wedding Card, Wedding Bag and Jute Bag Manufactur
 export const BRAND_LOGO = '/yg-logo.png'
 export const BRAND_ICON = '/yg-icon.png'
 export const BRAND_FAVICON = '/yg-favicon.png'
+
+// Per-branch logos: POS 1 (wedding cards/bags/jute bag manufacturing) and
+// POS 2 (fireworks & crackers) are different enough businesses that they
+// get their own marks wherever the UI is showing one specific branch.
+export const BRAND_LOGO_POS1 = '/yg-logo-pos1.png'
+export const BRAND_LOGO_POS2 = '/yg-logo-pos2.png'
 export const BRAND_PRODUCTION_DOMAIN = 'https://cen-gen-pos.vercel.app'
 
 // Owner / Personal contact
