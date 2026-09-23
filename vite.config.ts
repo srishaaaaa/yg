@@ -32,25 +32,25 @@ export default defineConfig({
         scope: '/',
         icons: [
           {
-            src: '/yg-icon-192.png?v=5',
+            src: '/yg-icon-192.png?v=6',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any',
           },
           {
-            src: '/yg-icon-512.png?v=5',
+            src: '/yg-icon-512.png?v=6',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any',
           },
           {
-            src: '/yg-icon-maskable-192.png?v=5',
+            src: '/yg-icon-maskable-192.png?v=6',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'maskable',
           },
           {
-            src: '/yg-icon-maskable-512.png?v=5',
+            src: '/yg-icon-maskable-512.png?v=6',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',
