@@ -10,6 +10,12 @@ export const branchLabel = (branch: PosBranch) => (branch === 'pos2' ? 'Firework
 /** Short chip/badge form of branchLabel for tight spaces (nav pills, badges). */
 export const branchShortLabel = (branch: PosBranch) => (branch === 'pos2' ? 'Fireworks POS' : 'Jute & Wedding POS')
 
+/** What this branch actually sells, for taglines/subtitles (matches the
+ * wording baked into each branch's own logo art and Store Settings
+ * business_type). */
+export const branchSubtitle = (branch: PosBranch) =>
+  branch === 'pos2' ? 'Fireworks & Crackers' : 'Wedding Card, Wedding Bag and Jute Bag Manufacturing'
+
 export const branchLogo = (branch: PosBranch) => (branch === 'pos2' ? BRAND_LOGO_POS2 : BRAND_LOGO_POS1)
 
 export const posAccent = (branch: PosBranch) => branch === 'pos2'

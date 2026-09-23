@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { Lock, Eye, EyeOff, AlertCircle, ShieldCheck, Store, ShieldAlert } from 'lucide-react'
 import { useAdminAuthStore, type PosBranch } from '../store/store'
 import { BRAND_EN, BRAND_TA, BRAND_SUBTITLE, BRAND_LOGO } from '../lib/brand'
-import { branchLogo, branchShortLabel } from '../lib/branchTheme'
+import { branchLogo, branchShortLabel, branchSubtitle } from '../lib/branchTheme'
 import { useLangStore } from '../store/langStore'
 import { alarmSound } from '../lib/alarmAudio'
 
@@ -74,7 +74,7 @@ export default function AdminLogin() {
       <div className="relative grid w-full max-w-4xl max-h-[92vh] overflow-hidden rounded-3xl border border-gray-200/90 bg-[#5C0D18] shadow-[0_25px_60px_-12px_rgba(0,0,0,0.25),0_12px_28px_-6px_rgba(0,0,0,0.15)] lg:grid-cols-[0.85fr_1.15fr]">
         <div className="hidden flex-col justify-between items-center bg-[#7A1220] border-r border-[#D4AF37]/20 p-8 lg:p-10 text-white lg:flex overflow-y-auto hide-scrollbar">
           <div className="w-full flex items-center justify-between">
-            <p className="text-[11px] font-black uppercase tracking-[0.26em] text-[#D4AF37]">{BRAND_SUBTITLE}</p>
+            <p className="text-[11px] font-black uppercase tracking-[0.26em] text-[#D4AF37]">{loginTab === 'staff' ? branchSubtitle(branch) : BRAND_SUBTITLE}</p>
           </div>
           <div className="my-auto flex flex-col items-center justify-center py-6 w-full">
             <div className="relative p-6 sm:p-8 rounded-3xl bg-[#5C0D18] border border-[#D4AF37]/40 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_40px_rgba(212,175,55,0.15)] flex items-center justify-center max-w-[280px] w-full aspect-square">
@@ -98,7 +98,7 @@ export default function AdminLogin() {
                 <img src={loginTab === 'staff' ? branchLogo(branch) : BRAND_LOGO} alt={BRAND_EN} className="w-full h-full object-contain" />
               </div>
             </div>
-            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#B48811]">{BRAND_SUBTITLE}</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#B48811]">{loginTab === 'staff' ? branchSubtitle(branch) : BRAND_SUBTITLE}</p>
             <h1 className="mt-1 text-2xl sm:text-3xl font-black tracking-tight text-[#7A1220]">{BRAND_EN}</h1>
             {BRAND_TA && BRAND_TA !== BRAND_EN && (
               <p className="mt-0.5 text-xs font-semibold text-[#7A786F]">{BRAND_TA}</p>
