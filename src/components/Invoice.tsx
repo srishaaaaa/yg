@@ -1,6 +1,8 @@
 import React from 'react'
 import { BRAND_ADDRESS, BRAND_EMAIL, BRAND_EN, BRAND_INSTAGRAM, BRAND_PRIMARY_PHONE_DISPLAY, BRAND_ICON } from '../lib/brand'
+import { branchLogo } from '../lib/branchTheme'
 import { formatCurrency, formatQuantityDisplay, normalizeStructuredOrderItem, formatInvoiceNo } from '../lib/retail'
+import type { PosBranch } from '../store/store'
 
 export interface InvoiceItem {
   id: string | number
@@ -36,6 +38,7 @@ export interface InvoiceProps {
   status?: string
   userId?: string
   paymentMode?: string
+  branch?: PosBranch
   onPrintReceipt?: () => void
 }
 
@@ -57,6 +60,7 @@ export const Invoice: React.FC<InvoiceProps> = ({
   status = 'completed',
   userId,
   paymentMode,
+  branch,
 }) => {
   const formattedInvoiceNo = formatInvoiceNo(invoiceNo)
   const dateStr = (() => {
@@ -78,7 +82,7 @@ export const Invoice: React.FC<InvoiceProps> = ({
       {/* ── HEADER ────────────────────────────────────────────────── */}
       <div className="invoice-header" style={{ textAlign: 'center', borderBottom: '1px solid #E8D399', paddingBottom: 20, marginBottom: 20 }}>
         <div style={{ width: 64, height: 64, margin: '0 auto 10px auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <img src={BRAND_ICON} alt={BRAND_EN} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          <img src={branch ? branchLogo(branch) : BRAND_ICON} alt={BRAND_EN} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
         </div>
         <div style={{ fontSize: 24, fontWeight: 900, color: '#7A1220', letterSpacing: 2, textTransform: 'uppercase' }}>
           {BRAND_EN}

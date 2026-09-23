@@ -1,12 +1,14 @@
 import { BRAND_ADDRESS, BRAND_EMAIL, BRAND_EN, BRAND_INSTAGRAM, BRAND_PRIMARY_PHONE_DISPLAY } from './brand'
-import { LOGO_BASE64 } from './logoBase64'
+import { LOGO_BASE64_POS1, LOGO_BASE64_POS2 } from './logoBase64'
 import { formatCurrency, formatInvoiceNo } from './retail'
+import type { PosBranch } from '../store/store'
 
 export interface ThermalReceiptData {
   invoiceNo: string
   date: string
   customerName?: string
   phone?: string
+  branch?: PosBranch
   items: Array<{
     name: string
     qty: number
@@ -28,6 +30,7 @@ export interface ThermalReceiptData {
 
 export function printThermalReceipt(data: ThermalReceiptData) {
   try {
+    const logoSrc = data.branch === 'pos2' ? LOGO_BASE64_POS2 : LOGO_BASE64_POS1
     // Create an isolated print iframe protected from third-party extension observers
     const iframe = document.createElement('iframe')
     iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden;'
@@ -102,7 +105,7 @@ export function printThermalReceipt(data: ThermalReceiptData) {
       </head>
       <body>
         <div class="text-center mb-2">
-          <img src="${LOGO_BASE64}" style="width: 48px; height: 48px; object-fit: contain; margin: 0 auto 6px auto; display: block;" alt="YG Logo" />
+          <img src="${logoSrc}" style="width: 48px; height: 48px; object-fit: contain; margin: 0 auto 6px auto; display: block;" alt="YG Logo" />
           <div class="font-bold" style="font-size: 16px; letter-spacing: 2px;">${data.storeName || BRAND_EN}</div>
           <div style="font-size: 10px; margin-top: 2px;">${data.storeAddress || BRAND_ADDRESS}</div>
           <div class="mt-1" style="font-size: 10px;">Ph: ${data.storePhone || BRAND_PRIMARY_PHONE_DISPLAY}</div>

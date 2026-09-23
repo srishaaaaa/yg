@@ -28,6 +28,7 @@ export type AdvanceOrder = {
   completed_order_id: string | null
   invoice_number: string | null
   final_payment_method: string | null
+  branch?: PosBranch
 }
 
 export type AdvanceTimeline = { id: number; advance_order_id: string; event_type: string; label: string; remarks: string; created_at: string }

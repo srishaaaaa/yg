@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Store, Phone, MapPin, Palette, RotateCcw, Save, Upload, Trash2, Loader2 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAdminAuthStore, useSettingsStore, resolveBranch } from '../../store/store'
-import { posAccent, branchShortLabel } from '../../lib/branchTheme'
+import { posAccent, branchShortLabel, branchLogo } from '../../lib/branchTheme'
 
 const PRESET_COLORS = [
   '#1A0E0E', '#5C0D18', '#7A1220', '#8B1A1A', '#B8860B', '#D4AF37',
@@ -150,17 +150,22 @@ export default function StoreSettingsView() {
           <p className="text-[10px] text-gray-400 font-semibold -mt-2">Logo, owner and shop name</p>
           <div className="flex items-center gap-3">
             <div className={`w-16 h-16 rounded-xl ${accent.bgLight} border ${accent.border} p-1.5 flex items-center justify-center overflow-hidden shrink-0`}>
-              {form.logoUrl ? <img src={form.logoUrl} alt="Logo" className="w-full h-full object-contain" /> : <Store size={22} className={accent.text} />}
+              <img src={form.logoUrl || branchLogo(branch)} alt="Logo" className="w-full h-full object-contain" />
             </div>
-            <div className="flex gap-2">
-              <label className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-[11px] font-bold text-gray-600 hover:bg-gray-50 cursor-pointer">
-                {uploading ? <Loader2 size={12} className="animate-spin" /> : <Upload size={12} />} Replace Logo
-                <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && void handleLogoUpload(e.target.files[0])} />
-              </label>
-              {form.logoUrl && (
-                <button onClick={() => setForm((f) => ({ ...f, logoUrl: '' }))} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 text-[11px] font-bold text-red-600 hover:bg-red-50 cursor-pointer">
-                  <Trash2 size={12} /> Remove
-                </button>
+            <div className="flex flex-col gap-1">
+              <div className="flex gap-2">
+                <label className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-[11px] font-bold text-gray-600 hover:bg-gray-50 cursor-pointer">
+                  {uploading ? <Loader2 size={12} className="animate-spin" /> : <Upload size={12} />} Replace Logo
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && void handleLogoUpload(e.target.files[0])} />
+                </label>
+                {form.logoUrl && (
+                  <button onClick={() => setForm((f) => ({ ...f, logoUrl: '' }))} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 text-[11px] font-bold text-red-600 hover:bg-red-50 cursor-pointer">
+                    <Trash2 size={12} /> Remove
+                  </button>
+                )}
+              </div>
+              {!form.logoUrl && (
+                <p className="text-[10px] text-gray-400 font-semibold">Showing this branch's default logo — upload a custom one to override it.</p>
               )}
             </div>
           </div>

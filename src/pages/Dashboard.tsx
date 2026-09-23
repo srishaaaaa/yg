@@ -91,6 +91,7 @@ type DashboardOrder = {
   created_at: string; total: number; status: string; order_mode: string; order_type: string; user_id: string | null; items: unknown
   coupon_code: string; discount_amount: number; manual_discount_amount: number; delivery_charge: number
   total_gst: number; payment_mode: string; payment_method?: string; invoice_pdf_url: string; remarks?: string; reference_number?: string
+  branch?: PosBranch
 }
 type DashboardOrderItem = { order_id: string; product_name: string; category?: string; quantity: number; line_total: number; is_manual?: boolean | null }
 type DashboardCoupon = {
@@ -852,7 +853,7 @@ export default function Dashboard() {
       const [cRes, oRes, couponRes, expList] = await Promise.all([
         supabase.from('categories').select('id, name_en, name_ta, is_active, sort_order').eq('branch', branch).order('sort_order'),
         supabase.from('orders')
-          .select('id, invoice_no, customer_name, phone, address, created_at, total, status, order_mode, order_type, user_id, items, coupon_code, discount_amount, manual_discount_amount, delivery_charge, total_gst, gst_amount, payment_mode, payment_method, remarks, reference_number')
+          .select('id, invoice_no, customer_name, phone, address, created_at, total, status, order_mode, order_type, user_id, items, coupon_code, discount_amount, manual_discount_amount, delivery_charge, total_gst, gst_amount, payment_mode, payment_method, remarks, reference_number, branch')
           .eq('branch', branch)
           .order('created_at', { ascending: false })
           .limit(1000),
@@ -1003,6 +1004,7 @@ export default function Dashboard() {
       date: order.created_at,
       customerName: order.customer_name,
       phone: order.phone,
+      branch: order.branch,
       items: (preview.items as Array<{
         name?: string
         product_name?: string
@@ -1050,6 +1052,7 @@ export default function Dashboard() {
       customerName: order.customer_name,
       phone: order.phone,
       address: order.address,
+      branch: order.branch,
       items: preview.items as unknown as Array<Record<string, unknown>>,
       subtotal: preview.subtotal,
       shipping: order.delivery_charge,
@@ -1249,7 +1252,7 @@ export default function Dashboard() {
       const hasQuery = Boolean(qText || invInput || phoneInput || custInput)
 
       let q = supabase.from('orders')
-        .select('id, invoice_no, customer_name, phone, address, created_at, total, status, order_mode, order_type, items, coupon_code, discount_amount, manual_discount_amount, delivery_charge, total_gst, gst_amount, payment_mode, payment_method, remarks, reference_number')
+        .select('id, invoice_no, customer_name, phone, address, created_at, total, status, order_mode, order_type, items, coupon_code, discount_amount, manual_discount_amount, delivery_charge, total_gst, gst_amount, payment_mode, payment_method, remarks, reference_number, branch')
         .neq('order_type', 'online_request')
         .order('created_at', { ascending: false })
         .limit(hasQuery ? 1000 : 500)
@@ -1750,18 +1753,20 @@ export default function Dashboard() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#5C0D18] border border-[#D4AF37]/50 shrink-0 shadow-sm hover:scale-105 transition-transform p-0.5 overflow-hidden">
               <img src={BRAND_ICON} alt={BRAND_EN} className="w-full h-full object-contain" />
             </div>
-            <div className="flex items-center gap-1.5 min-w-0 flex-1 overflow-hidden">
-              <span className="text-[13px] sm:text-[14px] font-black text-white tracking-wide truncate min-w-0">
+            <div className="flex flex-col min-w-0 flex-1 overflow-hidden gap-0.5">
+              <span className="text-[13px] sm:text-[14px] font-black text-white tracking-wide leading-tight">
                 {BRAND_EN}
               </span>
-              {!isGlobalView && (
-                <span className={`shrink-0 text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded whitespace-nowrap text-white ${branch === 'pos2' ? 'bg-posTwo' : 'bg-posOne'}`}>
-                  {branchLabel}
+              <div className="flex items-center gap-1 flex-wrap">
+                {!isGlobalView && (
+                  <span className={`shrink-0 text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded whitespace-nowrap text-white ${branch === 'pos2' ? 'bg-posTwo' : 'bg-posOne'}`}>
+                    {branchLabel}
+                  </span>
+                )}
+                <span className={`shrink-0 text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded whitespace-nowrap ${role === 'admin' ? 'bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40' : 'bg-gray-800 text-gray-300 border border-gray-700'}`}>
+                  {role === 'admin' ? 'ADMIN' : 'STAFF'}
                 </span>
-              )}
-              <span className={`shrink-0 text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded whitespace-nowrap ${role === 'admin' ? 'bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40' : 'bg-gray-800 text-gray-300 border border-gray-700'}`}>
-                {role === 'admin' ? 'ADMIN' : 'STAFF'}
-              </span>
+              </div>
             </div>
           </Link>
           <button
@@ -4695,6 +4700,7 @@ export default function Dashboard() {
                     customerName={invoicePreviewOrder.customer_name}
                     phone={invoicePreviewOrder.phone}
                     address={invoicePreviewOrder.address}
+                    branch={invoicePreviewOrder.branch}
                     items={preview.items as unknown as import('../components/Invoice').InvoiceItem[]}
                     subtotal={preview.subtotal}
                     shipping={invoicePreviewOrder.delivery_charge}

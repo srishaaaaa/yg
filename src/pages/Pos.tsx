@@ -938,6 +938,7 @@ export default function Pos(props: PosProps = {}) {
         customerName: inv.customerName,
         phone: inv.phone,
         address: inv.address,
+        branch,
         items: inv.items.map(item => ({ name: item.name, qty: item.qty, unit: item.selectedUnit, price: Number(item.basePrice) || 0, line_total: item.lineTotal })),
         subtotal: inv.subtotal,
         shipping: inv.shipping,
@@ -964,6 +965,7 @@ export default function Pos(props: PosProps = {}) {
       date: inv.date,
       customerName: inv.customerName,
       phone: inv.phone,
+      branch,
       items: inv.items.map(item => ({ name: item.name, qty: item.qty, unit: item.selectedUnit, price: Number(item.basePrice) || 0, line_total: item.lineTotal })),
       subtotal: inv.subtotal,
       shipping: inv.shipping,
@@ -1101,6 +1103,7 @@ export default function Pos(props: PosProps = {}) {
             customerName={invoice.customerName}
             phone={invoice.phone}
             address={invoice.address}
+            branch={branch}
             items={invoiceItems}
             subtotal={invoice.subtotal}
             shipping={invoice.shipping}

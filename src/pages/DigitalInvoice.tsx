@@ -345,6 +345,7 @@ export default function DigitalInvoice() {
       date: invoice.created_at,
       customerName: invoice.customer_name,
       phone: invoice.phone,
+      branch: invoice.branch,
       items: (invoice.items || []).map((item: Record<string, unknown>) => ({
         name: item.name || item.product_name,
         qty: item.qty || item.quantity,
@@ -395,6 +396,7 @@ export default function DigitalInvoice() {
             customerName={invoice.customer_name}
             phone={invoice.phone}
             address={invoice.address}
+            branch={invoice.branch}
             items={invoice.items || []}
             subtotal={subtotal}
             shipping={invoice.delivery_charge || 0}
