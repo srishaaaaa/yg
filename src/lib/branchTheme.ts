@@ -16,6 +16,11 @@ export const branchShortLabel = (branch: PosBranch) => (branch === 'pos2' ? 'Fir
 export const branchSubtitle = (branch: PosBranch) =>
   branch === 'pos2' ? 'Fireworks & Crackers' : 'Wedding Card, Wedding Bag and Jute Bag Manufacturing'
 
+/** Combined tagline for admin/global contexts that span both branches
+ * (e.g. the Admin Orchestrator login tab) — showing only one branch's
+ * business line there would be misleading since admin manages both. */
+export const combinedBranchSubtitle = () => `${branchSubtitle('pos1')} + ${branchSubtitle('pos2')}`
+
 export const branchLogo = (branch: PosBranch) => (branch === 'pos2' ? BRAND_LOGO_POS2 : BRAND_LOGO_POS1)
 
 export const posAccent = (branch: PosBranch) => branch === 'pos2'
