@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Store, Phone, MapPin, Palette, RotateCcw, Save, Upload, Trash2, Loader2 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAdminAuthStore, useSettingsStore, resolveBranch } from '../../store/store'
-import { posAccent } from '../../lib/branchTheme'
+import { posAccent, branchShortLabel } from '../../lib/branchTheme'
 
 const PRESET_COLORS = [
   '#1A0E0E', '#5C0D18', '#7A1220', '#8B1A1A', '#B8860B', '#D4AF37',
@@ -236,7 +236,7 @@ export default function StoreSettingsView() {
             <p className="text-xs font-black uppercase tracking-wide">Card Preview</p>
             <p className="text-[11px] font-semibold opacity-90 mt-0.5">This colour is used for this branch's Store Settings/Branch Hub accents.</p>
           </div>
-          <p className="text-[10px] text-gray-400 font-semibold">Saved with your profile — the rest of the app keeps its POS 1 / POS 2 maroon &amp; gold theme.</p>
+          <p className="text-[10px] text-gray-400 font-semibold">Saved with your profile — the rest of the app keeps its {branchShortLabel('pos1')} / {branchShortLabel('pos2')} maroon &amp; gold theme.</p>
         </div>
       </div>
     </div>

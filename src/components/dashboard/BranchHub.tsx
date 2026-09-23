@@ -5,7 +5,7 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase'
 import { useAdminAuthStore, useProductStore, useSettingsStore, resolveBranch, type PosBranch } from '../../store/store'
 import { formatCurrency } from '../../lib/retail'
 import { BRAND_EN } from '../../lib/brand'
-import { branchLogo } from '../../lib/branchTheme'
+import { branchLogo, branchLabel } from '../../lib/branchTheme'
 import type { TabKey } from '../../pages/Dashboard'
 
 const posAccent = (branch: PosBranch) => branch === 'pos2'
@@ -110,7 +110,7 @@ export default function BranchHub({ onNavigate }: BranchHubProps) {
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-lg font-black text-[#1A0E0E]">{BRAND_EN} — {branch === 'pos2' ? 'POS 2' : 'POS 1'}</h2>
+                <h2 className="text-lg font-black text-[#1A0E0E]">{BRAND_EN} — {branchLabel(branch)}</h2>
                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${accent.bgLight} ${accent.text}`}>
                   <span className={`h-1.5 w-1.5 rounded-full ${accent.bg}`} /> Active
                 </span>
@@ -149,13 +149,13 @@ export default function BranchHub({ onNavigate }: BranchHubProps) {
         </div>
       </div>
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+      {/* Stat cards — revenue/valuation figures are admin-only; staff only get operational counts */}
+      <div className={`grid grid-cols-2 ${role === 'admin' ? 'lg:grid-cols-5' : 'lg:grid-cols-2'} gap-3`}>
         {[
-          { label: "Today's Sales", value: formatCurrency(todaySales), icon: <TrendingUp size={15} /> },
+          ...(role === 'admin' ? [{ label: "Today's Sales", value: formatCurrency(todaySales), icon: <TrendingUp size={15} /> }] : []),
           { label: 'Bills Count', value: String(billsCount), icon: <Receipt size={15} /> },
-          { label: 'Average Bill', value: formatCurrency(avgBill), icon: <BarChart2 size={15} /> },
-          { label: 'Inventory Value', value: formatCurrency(inventoryValue), icon: <Boxes size={15} /> },
+          ...(role === 'admin' ? [{ label: 'Average Bill', value: formatCurrency(avgBill), icon: <BarChart2 size={15} /> }] : []),
+          ...(role === 'admin' ? [{ label: 'Inventory Value', value: formatCurrency(inventoryValue), icon: <Boxes size={15} /> }] : []),
           { label: 'Low Stock', value: String(lowStockCount), icon: <AlertTriangle size={15} />, warn: lowStockCount > 0 },
         ].map((s) => (
           <div key={s.label} className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
@@ -168,45 +168,47 @@ export default function BranchHub({ onNavigate }: BranchHubProps) {
         ))}
       </div>
 
-      {/* Trend + top SKUs */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-4">
-        <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
-          <p className="text-xs font-black uppercase tracking-wide text-gray-500 mb-3">Recent Daily Sales Trend (Last 7 Days)</p>
-          {trend.every((t) => t.total === 0) ? (
-            <p className="text-xs text-gray-400 font-semibold py-8 text-center">No sales recorded yet this week.</p>
-          ) : (
-            <div style={{ width: '100%', height: 180 }}>
-              <ResponsiveContainer>
-                <LineChart data={trend}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#F0EAE0" />
-                  <XAxis dataKey="day" tick={{ fontSize: 10 }} />
-                  <YAxis tick={{ fontSize: 10 }} width={40} />
-                  <Tooltip formatter={(v) => formatCurrency(Number(v) || 0)} />
-                  <Line type="monotone" dataKey="total" stroke={branch === 'pos2' ? '#B8860B' : '#8B1A1A'} strokeWidth={2} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          )}
+      {/* Trend + top SKUs — analytics, admin-only */}
+      {role === 'admin' && (
+        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-4">
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+            <p className="text-xs font-black uppercase tracking-wide text-gray-500 mb-3">Recent Daily Sales Trend (Last 7 Days)</p>
+            {trend.every((t) => t.total === 0) ? (
+              <p className="text-xs text-gray-400 font-semibold py-8 text-center">No sales recorded yet this week.</p>
+            ) : (
+              <div style={{ width: '100%', height: 180 }}>
+                <ResponsiveContainer>
+                  <LineChart data={trend}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#F0EAE0" />
+                    <XAxis dataKey="day" tick={{ fontSize: 10 }} />
+                    <YAxis tick={{ fontSize: 10 }} width={40} />
+                    <Tooltip formatter={(v) => formatCurrency(Number(v) || 0)} />
+                    <Line type="monotone" dataKey="total" stroke={branch === 'pos2' ? '#B8860B' : '#8B1A1A'} strokeWidth={2} dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </div>
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+            <p className="text-xs font-black uppercase tracking-wide text-gray-500 mb-3">Top Performing SKUs</p>
+            {topSkus.length === 0 ? (
+              <p className="text-xs text-gray-400 font-semibold py-8 text-center">No transactions recorded yet.</p>
+            ) : (
+              <ul className="space-y-2">
+                {topSkus.map((s, i) => (
+                  <li key={s.name} className="flex items-center justify-between text-xs">
+                    <span className="font-bold text-gray-700 truncate flex items-center gap-2">
+                      <span className={`w-5 h-5 rounded-full ${accent.bgLight} ${accent.text} font-black flex items-center justify-center text-[10px]`}>{i + 1}</span>
+                      {s.name}
+                    </span>
+                    <span className="font-black text-gray-900">{s.qty} sold</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
-        <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
-          <p className="text-xs font-black uppercase tracking-wide text-gray-500 mb-3">Top Performing SKUs</p>
-          {topSkus.length === 0 ? (
-            <p className="text-xs text-gray-400 font-semibold py-8 text-center">No transactions recorded yet.</p>
-          ) : (
-            <ul className="space-y-2">
-              {topSkus.map((s, i) => (
-                <li key={s.name} className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-gray-700 truncate flex items-center gap-2">
-                    <span className={`w-5 h-5 rounded-full ${accent.bgLight} ${accent.text} font-black flex items-center justify-center text-[10px]`}>{i + 1}</span>
-                    {s.name}
-                  </span>
-                  <span className="font-black text-gray-900">{s.qty} sold</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
+      )}
 
       {lowStockCount > 0 && (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">

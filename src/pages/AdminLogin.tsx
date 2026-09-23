@@ -3,13 +3,13 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { Lock, Eye, EyeOff, AlertCircle, ShieldCheck, Store, ShieldAlert } from 'lucide-react'
 import { useAdminAuthStore, type PosBranch } from '../store/store'
 import { BRAND_EN, BRAND_TA, BRAND_SUBTITLE, BRAND_LOGO } from '../lib/brand'
-import { branchLogo } from '../lib/branchTheme'
+import { branchLogo, branchShortLabel } from '../lib/branchTheme'
 import { useLangStore } from '../store/langStore'
 import { alarmSound } from '../lib/alarmAudio'
 
 const BRANCHES: { key: PosBranch; label: string }[] = [
-  { key: 'pos1', label: 'POS 1' },
-  { key: 'pos2', label: 'POS 2' },
+  { key: 'pos1', label: branchShortLabel('pos1') },
+  { key: 'pos2', label: branchShortLabel('pos2') },
 ]
 
 export default function AdminLogin() {
@@ -172,13 +172,13 @@ export default function AdminLogin() {
               <div>
                 <label className="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-[#6B7280]">
                   <ShieldCheck size={13} />
-                  {branch === 'pos1' ? l('Branch 1 (POS 1) Staff ID', 'கிளை 1 பணியாளர் ஐடி') : l('Branch 2 (POS 2) Staff ID', 'கிளை 2 பணியாளர் ஐடி')}
+                  {l(`${branchShortLabel(branch)} Staff ID`, `${branchShortLabel(branch)} பணியாளர் ஐடி`)}
                   <span className="font-black text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   autoComplete="username"
-                  placeholder={l(`Enter Branch ${branch === 'pos1' ? '1' : '2'} staff ID`, 'பணியாளர் ஐடி')}
+                  placeholder={l(`Enter ${branchShortLabel(branch)} staff ID`, 'பணியாளர் ஐடி')}
                   className="w-full rounded-xl border-2 border-[#E8D399] bg-[#FBFAF6] px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold outline-none transition-colors placeholder:text-[#AAA69C] focus:border-[#7A1220] focus:bg-white text-[#111111]"
                   value={staffId}
                   onChange={(e) => { setStaffId(e.target.value); setError('') }}
@@ -228,7 +228,7 @@ export default function AdminLogin() {
                 ) : (
                   <>
                     <Lock size={14} />
-                    {l(`Launch ${branch === 'pos1' ? 'POS 1' : 'POS 2'}`, `${branch === 'pos1' ? 'POS 1' : 'POS 2'} தொடங்கு`)}
+                    {l(`Launch ${branchShortLabel(branch)}`, `${branchShortLabel(branch)} தொடங்கு`)}
                   </>
                 )}
               </button>

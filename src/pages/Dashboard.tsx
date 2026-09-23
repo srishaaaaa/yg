@@ -73,6 +73,7 @@ import { useHardwareBarcodeScanner } from '../hooks/useHardwareBarcodeScanner'
 import { BarcodeRedirectDialog } from '../components/pos/BarcodeRedirectDialog'
 import { exportAnalyticsToCSV, exportAnalyticsToPDF } from '../services/analyticsExport'
 import { BRAND_EN, BRAND_LOGO, BRAND_ICON } from '../lib/brand'
+import { branchShortLabel } from '../lib/branchTheme'
 import {
   ResponsiveContainer,
   XAxis,
@@ -1665,7 +1666,7 @@ export default function Dashboard() {
   )
 
   const isGlobalView = role === 'admin' && activeBranch === 'all'
-  const branchLabel = branch === 'pos2' ? 'POS 2' : 'POS 1'
+  const branchLabel = branchShortLabel(branch)
 
   const globalNavItems: Array<{ id: TabKey; icon: React.ReactNode; label: string }> = [
     { id: 'business_overview',  icon: <Globe size={18} />, label: 'Business Overview' },
@@ -1790,8 +1791,8 @@ export default function Dashboard() {
               className="w-full rounded-xl bg-white/10 border border-white/15 text-white text-[11px] font-bold px-2.5 py-2 outline-none focus:border-[#D4AF37] cursor-pointer"
             >
               <option value="all" className="text-black">Global Admin (All Branches)</option>
-              <option value="pos1" className="text-black">POS 1</option>
-              <option value="pos2" className="text-black">POS 2</option>
+              <option value="pos1" className="text-black">{branchShortLabel('pos1')}</option>
+              <option value="pos2" className="text-black">{branchShortLabel('pos2')}</option>
             </select>
           ) : (
             <div className="w-full rounded-xl bg-white/10 border border-white/15 text-[#D4AF37] text-[11px] font-black px-2.5 py-2 flex items-center gap-1.5">
@@ -1845,7 +1846,7 @@ export default function Dashboard() {
                   className="shrink-0 flex items-center gap-2 lg:w-full px-3 h-[38px] rounded-xl text-[12.5px] font-bold text-white/80 hover:bg-white/10 hover:text-[#D4AF37] transition-colors cursor-pointer"
                 >
                   <span className={`h-2 w-2 rounded-full ${b === 'pos1' ? 'bg-posOne' : 'bg-posTwo'}`} />
-                  {b === 'pos1' ? 'POS 1' : 'POS 2'}
+                  {branchShortLabel(b)}
                 </button>
               ))}
             </div>

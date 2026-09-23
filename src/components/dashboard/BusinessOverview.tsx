@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { RefreshCw, TrendingUp, Receipt, Boxes, AlertTriangle, Store } from 'lucide-react'
 import { supabase, isSupabaseConfigured } from '../../lib/supabase'
 import type { PosBranch } from '../../store/store'
-import { posAccent, branchLabel, branchLogo } from '../../lib/branchTheme'
+import { posAccent, branchLabel, branchLogo, branchShortLabel } from '../../lib/branchTheme'
 import { formatCurrency } from '../../lib/retail'
 import { BRAND_EN } from '../../lib/brand'
 import type { TabKey } from '../../pages/Dashboard'
@@ -77,7 +77,7 @@ export default function BusinessOverview({ onNavigate }: BusinessOverviewProps) 
             <h2 className="text-xl font-black text-[#1A0E0E]">Business Overview</h2>
             <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black uppercase">Live Aggregation</span>
           </div>
-          <p className="text-xs text-gray-500 font-semibold mt-1">Consolidated real-time operational metrics across POS 1 and POS 2.</p>
+          <p className="text-xs text-gray-500 font-semibold mt-1">Consolidated real-time operational metrics across {branchShortLabel('pos1')} and {branchShortLabel('pos2')}.</p>
         </div>
         <button onClick={() => void load()} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold text-gray-600 hover:bg-gray-50 cursor-pointer">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh

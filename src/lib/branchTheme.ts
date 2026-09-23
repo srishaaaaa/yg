@@ -2,7 +2,13 @@ import type { PosBranch, StoreSettings } from '../store/store'
 import { normalizeHex, shadeHex, tintHex } from './color'
 import { BRAND_LOGO_POS1, BRAND_LOGO_POS2 } from './brand'
 
-export const branchLabel = (branch: PosBranch) => (branch === 'pos2' ? 'POS 2' : 'POS 1')
+/** User-facing branch name, themed to what that branch actually sells
+ * (not a generic "POS 1"/"POS 2") — keep this the single source of truth
+ * for the branch name shown anywhere in the UI. */
+export const branchLabel = (branch: PosBranch) => (branch === 'pos2' ? 'Fireworks & Crackers POS' : 'Jute & Wedding POS')
+
+/** Short chip/badge form of branchLabel for tight spaces (nav pills, badges). */
+export const branchShortLabel = (branch: PosBranch) => (branch === 'pos2' ? 'Fireworks POS' : 'Jute & Wedding POS')
 
 export const branchLogo = (branch: PosBranch) => (branch === 'pos2' ? BRAND_LOGO_POS2 : BRAND_LOGO_POS1)
 

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { FileText, Calendar, Download, Loader2 } from 'lucide-react'
 import { supabase, isSupabaseConfigured } from '../../lib/supabase'
-import { branchLabel } from '../../lib/branchTheme'
+import { branchLabel, branchShortLabel } from '../../lib/branchTheme'
 import type { PosBranch } from '../../store/store'
 
 const BRANCHES: PosBranch[] = ['pos1', 'pos2']
@@ -135,7 +135,7 @@ export default function BusinessReports() {
       icon: <FileText size={20} />,
       iconBg: 'bg-amber-50 text-amber-600',
       title: 'Monthly Consolidated Sales',
-      description: 'Combined ledger of POS 1 & POS 2 sales, discounts, and payment methods.',
+      description: `Combined ledger of ${branchShortLabel('pos1')} & ${branchShortLabel('pos2')} sales, discounts, and payment methods.`,
       onExport: exportMonthlyConsolidatedSales,
     },
     {
