@@ -17,7 +17,7 @@
 -- ====================================================================
 
 -- ============================================================
--- SECTION 1 / 24 — 20260716_0001_purple_boutique_schema.sql
+-- SECTION 1 / 25 — 20260716_0001_purple_boutique_schema.sql
 -- ============================================================
 
 -- YG Enterprises billing schema.
@@ -575,7 +575,7 @@ END;
 $$;
 
 -- ============================================================
--- SECTION 2 / 24 — 20260716_0002_purple_boutique_catalog.sql
+-- SECTION 2 / 25 — 20260716_0002_purple_boutique_catalog.sql
 -- ============================================================
 
 -- YG Enterprises initial catalog. Existing matching products are preserved.
@@ -693,7 +693,7 @@ WHERE p.category_id = c.id
   AND LOWER(BTRIM(p.name)) = LOWER(BTRIM(catalog.product_name));
 
 -- ============================================================
--- SECTION 3 / 24 — 20260716_0003_order_rpc_compatibility.sql
+-- SECTION 3 / 25 — 20260716_0003_order_rpc_compatibility.sql
 -- ============================================================
 
 -- Align the live legacy billing schema with the current YG Enterprises RPC payload.
@@ -936,7 +936,7 @@ NOTIFY pgrst, 'reload schema';
 COMMIT;
 
 -- ============================================================
--- SECTION 4 / 24 — 20260719_0004_advance_orders.sql
+-- SECTION 4 / 25 — 20260719_0004_advance_orders.sql
 -- ============================================================
 
 begin;
@@ -1118,7 +1118,7 @@ notify pgrst, 'reload schema';
 commit;
 
 -- ============================================================
--- SECTION 5 / 24 — 20260722_0005_eight_digit_invoice_numbers.sql
+-- SECTION 5 / 25 — 20260722_0005_eight_digit_invoice_numbers.sql
 -- ============================================================
 
 -- Migration: 8-digit Invoice Number Generation
@@ -1137,7 +1137,7 @@ AS $$
 $$;
 
 -- ============================================================
--- SECTION 6 / 24 — 20260724_0006_fix_complete_advance_order.sql
+-- SECTION 6 / 25 — 20260724_0006_fix_complete_advance_order.sql
 -- ============================================================
 
 -- Migration: Fix complete_advance_order RPC
@@ -1273,7 +1273,7 @@ GRANT EXECUTE ON FUNCTION public.complete_advance_order(uuid, text, text)
 NOTIFY pgrst, 'reload schema';
 
 -- ============================================================
--- SECTION 7 / 24 — 20260724_0008_fix_public_invoice_rpc.sql
+-- SECTION 7 / 25 — 20260724_0008_fix_public_invoice_rpc.sql
 -- ============================================================
 
 -- Migration: Fix missing get_public_invoice_by_number RPC
@@ -1296,7 +1296,7 @@ GRANT EXECUTE ON FUNCTION public.get_public_invoice_by_number(TEXT) TO anon, aut
 NOTIFY pgrst, 'reload schema';
 
 -- ============================================================
--- SECTION 8 / 24 — 20260724_0009_create_invoices_bucket.sql
+-- SECTION 8 / 25 — 20260724_0009_create_invoices_bucket.sql
 -- ============================================================
 
 -- Migration: Create invoices storage bucket
@@ -1316,7 +1316,7 @@ DROP POLICY IF EXISTS invoices_portal_update ON storage.objects;
 CREATE POLICY invoices_portal_update ON storage.objects FOR UPDATE TO anon, authenticated USING (bucket_id = 'invoices') WITH CHECK (bucket_id = 'invoices');
 
 -- ============================================================
--- SECTION 9 / 24 — 20260726_0007_update_complete_advance_order_discount.sql
+-- SECTION 9 / 25 — 20260726_0007_update_complete_advance_order_discount.sql
 -- ============================================================
 
 -- Migration: Update complete_advance_order to handle final amount, discounts, and coupons
@@ -1464,7 +1464,7 @@ GRANT EXECUTE ON FUNCTION public.complete_advance_order_v2(uuid, text, numeric, 
 NOTIFY pgrst, 'reload schema';
 
 -- ============================================================
--- SECTION 10 / 24 — 20260728_0010_final_audit_fixes.sql
+-- SECTION 10 / 25 — 20260728_0010_final_audit_fixes.sql
 -- ============================================================
 
 -- ============================================================
@@ -1590,7 +1590,7 @@ CREATE POLICY "Users can update own profile"
 NOTIFY pgrst, 'reload schema';
 
 -- ============================================================
--- SECTION 11 / 24 — 20260808_0011_billing_date_and_order_fields.sql
+-- SECTION 11 / 25 — 20260808_0011_billing_date_and_order_fields.sql
 -- ============================================================
 
 -- ============================================================
@@ -1625,7 +1625,7 @@ NOTIFY pgrst, 'reload schema';
 COMMIT;
 
 -- ============================================================
--- SECTION 12 / 24 — 20260901_0012_inventory_barcode_addon.sql
+-- SECTION 12 / 25 — 20260901_0012_inventory_barcode_addon.sql
 -- ============================================================
 
 -- ====================================================================
@@ -2197,7 +2197,7 @@ WHERE id = 1;
 COMMIT;
 
 -- ============================================================
--- SECTION 13 / 24 — 20260903_0013_expense_tracker_addon.sql
+-- SECTION 13 / 25 — 20260903_0013_expense_tracker_addon.sql
 -- ============================================================
 
 -- ====================================================================
@@ -2298,7 +2298,7 @@ $$;
 COMMIT;
 
 -- ============================================================
--- SECTION 14 / 24 — 20260904_0015_unregistered_category.sql
+-- SECTION 14 / 25 — 20260904_0015_unregistered_category.sql
 -- ============================================================
 
 -- ============================================================================
@@ -2319,7 +2319,7 @@ BEGIN
 END $$;
 
 -- ============================================================
--- SECTION 15 / 24 — 20260911_0016_rebrand_to_chaji_mens_wear.sql
+-- SECTION 15 / 25 — 20260911_0016_rebrand_to_chaji_mens_wear.sql
 -- ============================================================
 
 -- Migration: 20260911_0016_rebrand_to_chaji_mens_wear.sql
@@ -2370,7 +2370,7 @@ CREATE POLICY branding_portal_update ON storage.objects
 COMMIT;
 
 -- ============================================================
--- SECTION 16 / 24 — 20260912_0017_update_store_address.sql
+-- SECTION 16 / 25 — 20260912_0017_update_store_address.sql
 -- ============================================================
 
 -- Migration: 20260912_0017_update_store_address.sql
@@ -2386,7 +2386,7 @@ WHERE id = 1;
 COMMIT;
 
 -- ============================================================
--- SECTION 17 / 24 — 20260917_0001_fix_soft_delete_unique_constraints.sql
+-- SECTION 17 / 25 — 20260917_0001_fix_soft_delete_unique_constraints.sql
 -- ============================================================
 
 -- Fix for products unique constraint
@@ -2402,7 +2402,7 @@ CREATE UNIQUE INDEX product_variants_product_name_unique
   WHERE is_active = true;
 
 -- ============================================================
--- SECTION 18 / 24 — 20260918_0018_advance_order_self_heal.sql
+-- SECTION 18 / 25 — 20260918_0018_advance_order_self_heal.sql
 -- ============================================================
 
 -- ============================================================
@@ -2617,7 +2617,7 @@ GRANT EXECUTE ON FUNCTION public.update_advance_order_status(uuid, text, text) T
 NOTIFY pgrst, 'reload schema';
 
 -- ============================================================
--- SECTION 19 / 24 — 20260918_0019_robust_public_invoice_lookup.sql
+-- SECTION 19 / 25 — 20260918_0019_robust_public_invoice_lookup.sql
 -- ============================================================
 
 -- Migration: 20260918_0019_robust_public_invoice_lookup.sql
@@ -2660,7 +2660,7 @@ GRANT EXECUTE ON FUNCTION public.get_public_invoice_by_number(TEXT) TO anon, aut
 NOTIFY pgrst, 'reload schema';
 
 -- ============================================================
--- SECTION 20 / 24 — 20260924_0020_split_pos_branches.sql
+-- SECTION 20 / 25 — 20260924_0020_split_pos_branches.sql
 -- ============================================================
 
 -- ====================================================================
@@ -3704,7 +3704,7 @@ $$;
 COMMIT;
 
 -- ============================================================
--- SECTION 21 / 24 — 20260925_0021_cleanup_legacy_chaji_data.sql
+-- SECTION 21 / 25 — 20260925_0021_cleanup_legacy_chaji_data.sql
 -- ============================================================
 
 -- ====================================================================
@@ -3760,7 +3760,7 @@ WHERE id = 1;
 COMMIT;
 
 -- ============================================================
--- SECTION 22 / 24 — 20260925_0022_seed_branch_starter_catalog.sql
+-- SECTION 22 / 25 — 20260925_0022_seed_branch_starter_catalog.sql
 -- ============================================================
 
 -- ====================================================================
@@ -3836,7 +3836,7 @@ WHERE NOT EXISTS (
 COMMIT;
 
 -- ============================================================
--- SECTION 23 / 24 — 20260926_0023_branch_settings_and_attendance.sql
+-- SECTION 23 / 25 — 20260926_0023_branch_settings_and_attendance.sql
 -- ============================================================
 
 -- ====================================================================
@@ -3971,7 +3971,7 @@ GRANT EXECUTE ON FUNCTION public.punch_attendance(UUID, TEXT) TO anon, authentic
 COMMIT;
 
 -- ============================================================
--- SECTION 24 / 24 — 20260927_0024_pos2_fireworks_catalog.sql
+-- SECTION 24 / 25 — 20260927_0024_pos2_fireworks_catalog.sql
 -- ============================================================
 
 -- ====================================================================
@@ -4049,6 +4049,53 @@ WHERE NOT EXISTS (
 -- (Store Settings > Shop Profile > Business Type).
 UPDATE public.store_settings SET business_type = 'Wedding Cards, Bags & Jute Bag Manufacturing', updated_at = NOW() WHERE branch = 'pos1';
 UPDATE public.store_settings SET business_type = 'Fireworks & Crackers', updated_at = NOW() WHERE branch = 'pos2';
+
+COMMIT;
+
+-- ============================================================
+-- SECTION 25 / 25 — 20260928_0025_portal_credentials.sql
+-- ============================================================
+
+-- ====================================================================
+-- Migration 0025: Admin-editable portal passwords
+--
+-- Login credentials for the Admin Orchestrator / POS 1 staff / POS 2
+-- staff portals were previously fixed at build time via Vite env vars
+-- (VITE_ADMIN_PASSWORD / VITE_POS1_STAFF_PASSWORD / VITE_POS2_STAFF_PASSWORD),
+-- with no way to change a password without editing .env and redeploying.
+--
+-- This table lets the admin change any of the 3 passwords from inside
+-- the app (Dashboard > Staff & Memberships). A NULL password_override
+-- means "keep using the .env default" for that account; Portal IDs are
+-- unaffected and still come from .env.
+--
+-- Note on trust model: like every other table in this schema, RLS here
+-- is permissive (USING (TRUE)) because there is no real Supabase Auth
+-- session for the POS portal logins -- this app authenticates client-side
+-- against a fixed credential set, the same trust level as the .env
+-- passwords it replaces (both are readable by anyone who inspects the
+-- client, since the anon key is public). This is not a security upgrade,
+-- just a way to change the password without a redeploy.
+-- ====================================================================
+
+BEGIN;
+
+CREATE TABLE IF NOT EXISTS public.portal_credentials (
+  role_key TEXT PRIMARY KEY CHECK (role_key IN ('admin', 'pos1_staff', 'pos2_staff')),
+  password_override TEXT,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+INSERT INTO public.portal_credentials (role_key, password_override)
+VALUES ('admin', NULL), ('pos1_staff', NULL), ('pos2_staff', NULL)
+ON CONFLICT (role_key) DO NOTHING;
+
+ALTER TABLE public.portal_credentials ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS portal_credentials_portal_manage ON public.portal_credentials;
+CREATE POLICY portal_credentials_portal_manage ON public.portal_credentials FOR ALL TO anon, authenticated USING (TRUE) WITH CHECK (TRUE);
+
+NOTIFY pgrst, 'reload schema';
 
 COMMIT;
 

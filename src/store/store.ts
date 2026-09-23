@@ -16,6 +16,7 @@ import {
 
 import { useAlarmStore } from './alarmStore'
 import { alarmSound } from '../lib/alarmAudio'
+import { fetchCredentialOverrides } from '../services/credentialService'
 
 export type { ProductVariant }
 
@@ -633,9 +634,13 @@ export const useAdminAuthStore = create<AdminAuthState>()(
         const trimmedId = String(portalId || '').trim()
         const trimmedPass = String(password || '').trim()
 
+        // DB-stored password overrides (set via Dashboard > Staff & Memberships),
+        // take precedence over the .env defaults below when present.
+        const overrides = await fetchCredentialOverrides()
+
         // 1. Check Admin Credentials (support VITE_ADMIN_ID or VITE_PORTAL_ID fallback)
         const adminId = String(import.meta.env.VITE_ADMIN_ID || import.meta.env.VITE_PORTAL_ID || 'admin').trim()
-        const adminPass = String(import.meta.env.VITE_ADMIN_PASSWORD || import.meta.env.VITE_PORTAL_PASSWORD || 'admin123').trim()
+        const adminPass = overrides.admin || String(import.meta.env.VITE_ADMIN_PASSWORD || import.meta.env.VITE_PORTAL_PASSWORD || 'admin123').trim()
 
         if (trimmedId === adminId && trimmedPass === adminPass) {
           useAlarmStore.getState().resetSilencedState()
@@ -645,7 +650,7 @@ export const useAdminAuthStore = create<AdminAuthState>()(
 
         // 2. Check POS 1 Staff Credentials (falls back to legacy VITE_STAFF_ID/PASSWORD)
         const pos1Id = String(import.meta.env.VITE_POS1_STAFF_ID || import.meta.env.VITE_STAFF_ID || 'staff1').trim()
-        const pos1Pass = String(import.meta.env.VITE_POS1_STAFF_PASSWORD || import.meta.env.VITE_STAFF_PASSWORD || 'staff123').trim()
+        const pos1Pass = overrides.pos1_staff || String(import.meta.env.VITE_POS1_STAFF_PASSWORD || import.meta.env.VITE_STAFF_PASSWORD || 'staff123').trim()
 
         if (trimmedId === pos1Id && trimmedPass === pos1Pass) {
           if (branchAttempt && branchAttempt !== 'pos1') return false
@@ -656,7 +661,7 @@ export const useAdminAuthStore = create<AdminAuthState>()(
 
         // 3. Check POS 2 Staff Credentials
         const pos2Id = String(import.meta.env.VITE_POS2_STAFF_ID || 'staff2').trim()
-        const pos2Pass = String(import.meta.env.VITE_POS2_STAFF_PASSWORD || 'staff123').trim()
+        const pos2Pass = overrides.pos2_staff || String(import.meta.env.VITE_POS2_STAFF_PASSWORD || 'staff123').trim()
 
         if (pos2Id && trimmedId === pos2Id && trimmedPass === pos2Pass) {
           if (branchAttempt && branchAttempt !== 'pos2') return false
