@@ -1,4 +1,5 @@
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
+import type { PosBranch } from '../store/store'
 
 export type ProductVariant = {
   id: string
@@ -35,6 +36,9 @@ export type VariantInput = {
   isDefault?: boolean
   sortOrder?: number
   imageUrl?: string | null
+  /** Required when creating a new variant — which branch it belongs to.
+   * Ignored on update (a variant's branch never changes after creation). */
+  branch?: PosBranch
 }
 
 const VARIANT_COLS =
@@ -116,6 +120,7 @@ export async function createVariant(input: VariantInput): Promise<{ data: Produc
       sort_order:   input.sortOrder ?? 0,
       image_url:    input.imageUrl ?? null,
       is_active:    true,
+      branch:       input.branch || 'pos1',
     })
     .select(VARIANT_COLS)
     .single()

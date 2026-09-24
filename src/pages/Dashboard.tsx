@@ -1424,7 +1424,7 @@ export default function Dashboard() {
 
       const { error } = editingProd
         ? await supabase.from('products').update(payload).eq('id', editingProd.id)
-        : await supabase.from('products').insert(payload)
+        : await supabase.from('products').insert({ ...payload, branch })
       if (error) throw error
       setProductNotice(editingProd ? 'Product updated!' : 'Product added!')
       setEditingProd(null); setProdForm(emptyForm)
@@ -1496,6 +1496,7 @@ export default function Dashboard() {
         weightUnit:  variantForm.weightUnit.trim() || null,
         isDefault:   variantForm.isDefault,
         sortOrder:   getVariants(String(editingProd.id)).length,
+        branch,
       }
       if (editingVariantId) {
         const { error } = await updateVariant(editingVariantId, payload)
@@ -1555,7 +1556,7 @@ export default function Dashboard() {
     if (!newCat.name_en.trim()) return
     const payload = { ...newCat, name_en: newCat.name_en.trim() }
     const { error } = editingCategoryId === null
-      ? await supabase.from('categories').insert({ ...payload, is_active: true })
+      ? await supabase.from('categories').insert({ ...payload, is_active: true, branch })
       : await supabase.from('categories').update(payload).eq('id', editingCategoryId)
     if (error) {
       setCategoryNotice({ type: 'error', text: error.message || 'Could not add category.' })
