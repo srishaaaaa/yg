@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { X, Search, ShoppingBag, Edit2, Trash2 } from 'lucide-react'
 import { useProductStore, type Product, type PosBranch } from '../store/store'
 import { supabase } from '../lib/supabase'
@@ -124,7 +125,7 @@ export default function CatalogModal({ isOpen, branch, onClose, onAdd }: Catalog
 
   if (!isOpen) return null
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl sm:rounded-3xl w-full max-w-5xl flex min-h-0 flex-col shadow-2xl overflow-hidden border border-[#E5E7EB]/40 max-h-[calc(100dvh-1rem)] sm:max-h-[85vh]">
 
@@ -214,7 +215,7 @@ export default function CatalogModal({ isOpen, branch, onClose, onAdd }: Catalog
                   <ShoppingBag size={48} className="mb-4 opacity-20" />
                   <p className="text-[14px] font-bold">No products found</p>
                 </div>
-              ) : (                  <div className="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              ) : (                  <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                   {filtered.map(product => (
                     <div key={product.id}
                       className="bg-white border border-[#E5E7EB]/60 rounded-2xl p-3 flex flex-col justify-between gap-2.5 hover:border-[#D4AF37]/40 hover:shadow-md transition-all group">
@@ -231,7 +232,7 @@ export default function CatalogModal({ isOpen, branch, onClose, onAdd }: Catalog
                       <div className="pt-2 border-t border-[#E5E7EB]/40 flex items-center justify-between gap-1.5">
                         <div onClick={() => onAdd(product)} className="cursor-pointer flex flex-col min-w-0">
                           <span className="text-[14px] font-black text-[#111111] tabular-nums">₹{product.price}</span>
-                          <span className="text-[9px] font-bold text-[#374151] uppercase tracking-wider bg-[#F9FAFB] px-1.5 py-0.5 rounded border border-[#E5E7EB]/40 truncate max-w-[80px]">
+                          <span className="text-[9px] font-bold text-[#374151] uppercase tracking-wider bg-[#F9FAFB] px-1.5 py-0.5 rounded border border-[#E5E7EB]/40 break-words">
                             {product.category}
                           </span>
                         </div>
@@ -263,6 +264,7 @@ export default function CatalogModal({ isOpen, branch, onClose, onAdd }: Catalog
         )}
 
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

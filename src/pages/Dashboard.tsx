@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo, useRef, type FormEvent } from 'react'
+import { createPortal } from 'react-dom'
 import {
   BarChart2, Trash2, Edit2, List, ShoppingCart, LayoutDashboard,
   Box, AlertCircle, ArrowUp, ArrowDown, Power, Download, TrendingUp, TrendingDown,
@@ -4651,7 +4652,7 @@ export default function Dashboard() {
         const preview = getOrderWhatsAppPreview(invoicePreviewOrder)
         if (!preview) return null
 
-        return (
+        return createPortal(
           <div
             className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-3 sm:p-6"
             role="dialog"
@@ -4715,7 +4716,8 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )
       })()}
 

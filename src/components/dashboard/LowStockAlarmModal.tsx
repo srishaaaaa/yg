@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { AlertTriangle, Volume2, VolumeX, Barcode, Package, ChevronRight } from 'lucide-react'
 import { useAlarmStore } from '../../store/alarmStore'
 import { alarmSound } from '../../lib/alarmAudio'
@@ -23,7 +24,7 @@ export const LowStockAlarmModal: React.FC = () => {
 
   if (!isAlarmActive || lowStockItems.length === 0) return null
 
-  return (
+  return createPortal(
     <div
       onClick={handleWakeAudio}
       onTouchStart={handleWakeAudio}
@@ -187,6 +188,7 @@ export const LowStockAlarmModal: React.FC = () => {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

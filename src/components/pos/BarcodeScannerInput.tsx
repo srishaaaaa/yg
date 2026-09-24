@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { Camera, X, AlertCircle, Sparkles, ScanLine, SwitchCamera } from 'lucide-react'
 import { BrowserMultiFormatReader, type IScannerControls } from '@zxing/browser'
 import { barcodeService } from '../../services/barcodeService'
@@ -396,7 +397,7 @@ export const BarcodeScannerInput: React.FC<BarcodeScannerInputProps> = ({
       )}
 
       {/* Instant Webcam Scanner Modal */}
-      {isCameraOpen && (
+      {isCameraOpen && createPortal(
         <div
           onClick={(e) => {
             if (e.target === e.currentTarget) handleCloseCamera()
@@ -448,7 +449,8 @@ export const BarcodeScannerInput: React.FC<BarcodeScannerInputProps> = ({
               </p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )

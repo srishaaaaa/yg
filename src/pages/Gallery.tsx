@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight, X, ZoomIn } from 'lucide-react'
 import { galleryImages, type GalleryImage } from '../data/galleryImages'
@@ -49,7 +50,7 @@ function Lightbox({
 
   const img = images[current]
 
-  return (
+  return createPortal(
     <motion.div
       className="fixed inset-0 z-[100] bg-black/96 flex flex-col items-center justify-center"
       initial={{ opacity: 0 }}
@@ -141,7 +142,8 @@ function Lightbox({
           />
         ))}
       </div>
-    </motion.div>
+    </motion.div>,
+    document.body
   )
 }
 

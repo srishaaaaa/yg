@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react'
 import { useCartStore, useFavStore } from '../store/store'
@@ -20,7 +21,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
     })
   }
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
@@ -84,7 +85,8 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }
 
@@ -93,7 +95,7 @@ export function FavoritesDrawer({ open, onClose }: { open: boolean; onClose: () 
   const { t, lang } = useLangStore()
   const add = useCartStore(s => s.add)
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
@@ -138,6 +140,7 @@ export function FavoritesDrawer({ open, onClose }: { open: boolean; onClose: () 
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { X, PlusCircle, AlertCircle } from 'lucide-react'
 import { useLangStore } from '../../store/langStore'
 
@@ -69,7 +70,7 @@ export const AddUnregisteredItemModal: React.FC<Props> = ({ isOpen, onClose, onS
     }
   }
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
       <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-[#E8D399]/50 animate-in fade-in zoom-in-95">
         {/* Header */}
@@ -204,6 +205,7 @@ export const AddUnregisteredItemModal: React.FC<Props> = ({ isOpen, onClose, onS
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
