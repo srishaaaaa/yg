@@ -17,7 +17,7 @@
 -- ====================================================================
 
 -- ============================================================
--- SECTION 1 / 26 — 20260716_0001_purple_boutique_schema.sql
+-- SECTION 1 / 27 — 20260716_0001_purple_boutique_schema.sql
 -- ============================================================
 
 -- YG Enterprises billing schema.
@@ -575,7 +575,7 @@ END;
 $$;
 
 -- ============================================================
--- SECTION 2 / 26 — 20260716_0002_purple_boutique_catalog.sql
+-- SECTION 2 / 27 — 20260716_0002_purple_boutique_catalog.sql
 -- ============================================================
 
 -- YG Enterprises initial catalog. Existing matching products are preserved.
@@ -693,7 +693,7 @@ WHERE p.category_id = c.id
   AND LOWER(BTRIM(p.name)) = LOWER(BTRIM(catalog.product_name));
 
 -- ============================================================
--- SECTION 3 / 26 — 20260716_0003_order_rpc_compatibility.sql
+-- SECTION 3 / 27 — 20260716_0003_order_rpc_compatibility.sql
 -- ============================================================
 
 -- Align the live legacy billing schema with the current YG Enterprises RPC payload.
@@ -936,7 +936,7 @@ NOTIFY pgrst, 'reload schema';
 COMMIT;
 
 -- ============================================================
--- SECTION 4 / 26 — 20260719_0004_advance_orders.sql
+-- SECTION 4 / 27 — 20260719_0004_advance_orders.sql
 -- ============================================================
 
 begin;
@@ -1118,7 +1118,7 @@ notify pgrst, 'reload schema';
 commit;
 
 -- ============================================================
--- SECTION 5 / 26 — 20260722_0005_eight_digit_invoice_numbers.sql
+-- SECTION 5 / 27 — 20260722_0005_eight_digit_invoice_numbers.sql
 -- ============================================================
 
 -- Migration: 8-digit Invoice Number Generation
@@ -1137,7 +1137,7 @@ AS $$
 $$;
 
 -- ============================================================
--- SECTION 6 / 26 — 20260724_0006_fix_complete_advance_order.sql
+-- SECTION 6 / 27 — 20260724_0006_fix_complete_advance_order.sql
 -- ============================================================
 
 -- Migration: Fix complete_advance_order RPC
@@ -1273,7 +1273,7 @@ GRANT EXECUTE ON FUNCTION public.complete_advance_order(uuid, text, text)
 NOTIFY pgrst, 'reload schema';
 
 -- ============================================================
--- SECTION 7 / 26 — 20260724_0008_fix_public_invoice_rpc.sql
+-- SECTION 7 / 27 — 20260724_0008_fix_public_invoice_rpc.sql
 -- ============================================================
 
 -- Migration: Fix missing get_public_invoice_by_number RPC
@@ -1296,7 +1296,7 @@ GRANT EXECUTE ON FUNCTION public.get_public_invoice_by_number(TEXT) TO anon, aut
 NOTIFY pgrst, 'reload schema';
 
 -- ============================================================
--- SECTION 8 / 26 — 20260724_0009_create_invoices_bucket.sql
+-- SECTION 8 / 27 — 20260724_0009_create_invoices_bucket.sql
 -- ============================================================
 
 -- Migration: Create invoices storage bucket
@@ -1316,7 +1316,7 @@ DROP POLICY IF EXISTS invoices_portal_update ON storage.objects;
 CREATE POLICY invoices_portal_update ON storage.objects FOR UPDATE TO anon, authenticated USING (bucket_id = 'invoices') WITH CHECK (bucket_id = 'invoices');
 
 -- ============================================================
--- SECTION 9 / 26 — 20260726_0007_update_complete_advance_order_discount.sql
+-- SECTION 9 / 27 — 20260726_0007_update_complete_advance_order_discount.sql
 -- ============================================================
 
 -- Migration: Update complete_advance_order to handle final amount, discounts, and coupons
@@ -1464,7 +1464,7 @@ GRANT EXECUTE ON FUNCTION public.complete_advance_order_v2(uuid, text, numeric, 
 NOTIFY pgrst, 'reload schema';
 
 -- ============================================================
--- SECTION 10 / 26 — 20260728_0010_final_audit_fixes.sql
+-- SECTION 10 / 27 — 20260728_0010_final_audit_fixes.sql
 -- ============================================================
 
 -- ============================================================
@@ -1590,7 +1590,7 @@ CREATE POLICY "Users can update own profile"
 NOTIFY pgrst, 'reload schema';
 
 -- ============================================================
--- SECTION 11 / 26 — 20260808_0011_billing_date_and_order_fields.sql
+-- SECTION 11 / 27 — 20260808_0011_billing_date_and_order_fields.sql
 -- ============================================================
 
 -- ============================================================
@@ -1625,7 +1625,7 @@ NOTIFY pgrst, 'reload schema';
 COMMIT;
 
 -- ============================================================
--- SECTION 12 / 26 — 20260901_0012_inventory_barcode_addon.sql
+-- SECTION 12 / 27 — 20260901_0012_inventory_barcode_addon.sql
 -- ============================================================
 
 -- ====================================================================
@@ -2197,7 +2197,7 @@ WHERE id = 1;
 COMMIT;
 
 -- ============================================================
--- SECTION 13 / 26 — 20260903_0013_expense_tracker_addon.sql
+-- SECTION 13 / 27 — 20260903_0013_expense_tracker_addon.sql
 -- ============================================================
 
 -- ====================================================================
@@ -2298,7 +2298,7 @@ $$;
 COMMIT;
 
 -- ============================================================
--- SECTION 14 / 26 — 20260904_0015_unregistered_category.sql
+-- SECTION 14 / 27 — 20260904_0015_unregistered_category.sql
 -- ============================================================
 
 -- ============================================================================
@@ -2319,7 +2319,7 @@ BEGIN
 END $$;
 
 -- ============================================================
--- SECTION 15 / 26 — 20260911_0016_rebrand_to_chaji_mens_wear.sql
+-- SECTION 15 / 27 — 20260911_0016_rebrand_to_chaji_mens_wear.sql
 -- ============================================================
 
 -- Migration: 20260911_0016_rebrand_to_chaji_mens_wear.sql
@@ -2370,7 +2370,7 @@ CREATE POLICY branding_portal_update ON storage.objects
 COMMIT;
 
 -- ============================================================
--- SECTION 16 / 26 — 20260912_0017_update_store_address.sql
+-- SECTION 16 / 27 — 20260912_0017_update_store_address.sql
 -- ============================================================
 
 -- Migration: 20260912_0017_update_store_address.sql
@@ -2386,7 +2386,7 @@ WHERE id = 1;
 COMMIT;
 
 -- ============================================================
--- SECTION 17 / 26 — 20260917_0001_fix_soft_delete_unique_constraints.sql
+-- SECTION 17 / 27 — 20260917_0001_fix_soft_delete_unique_constraints.sql
 -- ============================================================
 
 -- Fix for products unique constraint
@@ -2402,7 +2402,7 @@ CREATE UNIQUE INDEX product_variants_product_name_unique
   WHERE is_active = true;
 
 -- ============================================================
--- SECTION 18 / 26 — 20260918_0018_advance_order_self_heal.sql
+-- SECTION 18 / 27 — 20260918_0018_advance_order_self_heal.sql
 -- ============================================================
 
 -- ============================================================
@@ -2617,7 +2617,7 @@ GRANT EXECUTE ON FUNCTION public.update_advance_order_status(uuid, text, text) T
 NOTIFY pgrst, 'reload schema';
 
 -- ============================================================
--- SECTION 19 / 26 — 20260918_0019_robust_public_invoice_lookup.sql
+-- SECTION 19 / 27 — 20260918_0019_robust_public_invoice_lookup.sql
 -- ============================================================
 
 -- Migration: 20260918_0019_robust_public_invoice_lookup.sql
@@ -2660,7 +2660,7 @@ GRANT EXECUTE ON FUNCTION public.get_public_invoice_by_number(TEXT) TO anon, aut
 NOTIFY pgrst, 'reload schema';
 
 -- ============================================================
--- SECTION 20 / 26 — 20260924_0020_split_pos_branches.sql
+-- SECTION 20 / 27 — 20260924_0020_split_pos_branches.sql
 -- ============================================================
 
 -- ====================================================================
@@ -3704,7 +3704,7 @@ $$;
 COMMIT;
 
 -- ============================================================
--- SECTION 21 / 26 — 20260925_0021_cleanup_legacy_chaji_data.sql
+-- SECTION 21 / 27 — 20260925_0021_cleanup_legacy_chaji_data.sql
 -- ============================================================
 
 -- ====================================================================
@@ -3760,7 +3760,7 @@ WHERE id = 1;
 COMMIT;
 
 -- ============================================================
--- SECTION 22 / 26 — 20260925_0022_seed_branch_starter_catalog.sql
+-- SECTION 22 / 27 — 20260925_0022_seed_branch_starter_catalog.sql
 -- ============================================================
 
 -- ====================================================================
@@ -3836,7 +3836,7 @@ WHERE NOT EXISTS (
 COMMIT;
 
 -- ============================================================
--- SECTION 23 / 26 — 20260926_0023_branch_settings_and_attendance.sql
+-- SECTION 23 / 27 — 20260926_0023_branch_settings_and_attendance.sql
 -- ============================================================
 
 -- ====================================================================
@@ -3971,7 +3971,7 @@ GRANT EXECUTE ON FUNCTION public.punch_attendance(UUID, TEXT) TO anon, authentic
 COMMIT;
 
 -- ============================================================
--- SECTION 24 / 26 — 20260927_0024_pos2_fireworks_catalog.sql
+-- SECTION 24 / 27 — 20260927_0024_pos2_fireworks_catalog.sql
 -- ============================================================
 
 -- ====================================================================
@@ -4053,7 +4053,7 @@ UPDATE public.store_settings SET business_type = 'Fireworks & Crackers', updated
 COMMIT;
 
 -- ============================================================
--- SECTION 25 / 26 — 20260928_0025_portal_credentials.sql
+-- SECTION 25 / 27 — 20260928_0025_portal_credentials.sql
 -- ============================================================
 
 -- ====================================================================
@@ -4100,7 +4100,7 @@ NOTIFY pgrst, 'reload schema';
 COMMIT;
 
 -- ============================================================
--- SECTION 26 / 26 — 20260929_0026_fix_null_remarks_checkout_error.sql
+-- SECTION 26 / 27 — 20260929_0026_fix_null_remarks_checkout_error.sql
 -- ============================================================
 
 -- ====================================================================
@@ -4355,6 +4355,87 @@ BEGIN
     'order_id', v_order_id,
     'invoice_no', v_invoice_no,
     'total', v_total
+  );
+END;
+$$;
+
+NOTIFY pgrst, 'reload schema';
+
+COMMIT;
+
+-- ============================================================
+-- SECTION 27 / 27 — 20260930_0027_split_expenses_by_branch.sql
+-- ============================================================
+
+-- ====================================================================
+-- Migration 0027: Split Expenses Ledger per branch
+--
+-- expenses never got a `branch` column when POS1/POS2 were split
+-- (migration 0020), so an expense logged from either counter showed up
+-- in one combined ledger. Adds branch isolation matching every other
+-- table (products, orders, inventory, advance orders, barcodes).
+--
+-- expense_categories stays global/shared (a taxonomy list like
+-- "Rent"/"Salaries", not a financial record) -- only the actual
+-- expense entries are branch-scoped.
+--
+-- Existing rows default to 'pos1' (pre-split expenses predate the
+-- branch split and belong to the original counter), same convention
+-- used when products/orders were split.
+-- ====================================================================
+
+BEGIN;
+
+ALTER TABLE public.expenses ADD COLUMN IF NOT EXISTS branch TEXT NOT NULL DEFAULT 'pos1';
+
+DO $$
+BEGIN
+  ALTER TABLE public.expenses ADD CONSTRAINT expenses_branch_check CHECK (branch IN ('pos1', 'pos2'));
+EXCEPTION WHEN duplicate_object THEN NULL;
+END;
+$$;
+
+CREATE INDEX IF NOT EXISTS idx_expenses_branch ON public.expenses(branch, expense_date DESC);
+
+DROP FUNCTION IF EXISTS public.get_expense_summary_metrics(DATE);
+
+CREATE OR REPLACE FUNCTION public.get_expense_summary_metrics(
+  p_current_date DATE DEFAULT CURRENT_DATE,
+  p_branch TEXT DEFAULT 'pos1'
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_today NUMERIC(12,2) := 0;
+  v_this_week NUMERIC(12,2) := 0;
+  v_this_month NUMERIC(12,2) := 0;
+  v_this_year NUMERIC(12,2) := 0;
+  v_total_all_time NUMERIC(12,2) := 0;
+  v_week_start DATE := date_trunc('week', p_current_date)::DATE;
+  v_month_start DATE := date_trunc('month', p_current_date)::DATE;
+  v_year_start DATE := date_trunc('year', p_current_date)::DATE;
+  v_branch TEXT := CASE WHEN p_branch = 'pos2' THEN 'pos2' ELSE 'pos1' END;
+BEGIN
+  SELECT
+    COALESCE(SUM(CASE WHEN expense_date = p_current_date THEN amount ELSE 0 END), 0),
+    COALESCE(SUM(CASE WHEN expense_date >= v_week_start AND expense_date <= p_current_date THEN amount ELSE 0 END), 0),
+    COALESCE(SUM(CASE WHEN expense_date >= v_month_start AND expense_date <= p_current_date THEN amount ELSE 0 END), 0),
+    COALESCE(SUM(CASE WHEN expense_date >= v_year_start AND expense_date <= p_current_date THEN amount ELSE 0 END), 0),
+    COALESCE(SUM(amount), 0)
+  INTO
+    v_today, v_this_week, v_this_month, v_this_year, v_total_all_time
+  FROM public.expenses
+  WHERE branch = v_branch;
+
+  RETURN jsonb_build_object(
+    'today', v_today,
+    'this_week', v_this_week,
+    'this_month', v_this_month,
+    'this_year', v_this_year,
+    'total_all_time', v_total_all_time
   );
 END;
 $$;

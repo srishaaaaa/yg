@@ -24,8 +24,10 @@ import {
 } from '../../services/expenseService'
 import { RecordExpenseModal } from './RecordExpenseModal'
 import { ExpenseCategoriesView } from './ExpenseCategoriesView'
+import { useAdminAuthStore, resolveBranch } from '../../store/store'
 
 export const ExpensesView: React.FC = () => {
+  const branch = useAdminAuthStore((s) => resolveBranch(s.activeBranch))
   const [activeTab, setActiveTab] = useState<'expenses' | 'categories'>('expenses')
   const [isRecordModalOpen, setIsRecordModalOpen] = useState(false)
   const [editingExpense, setEditingExpense] = useState<ExpenseRecord | null>(null)
@@ -55,12 +57,12 @@ export const ExpensesView: React.FC = () => {
 
   const loadMetrics = useCallback(async () => {
     try {
-      const data = await expenseService.getMetrics()
+      const data = await expenseService.getMetrics(branch)
       setMetrics(data)
     } catch (err) {
       console.warn('Failed to load expense metrics:', err)
     }
-  }, [])
+  }, [branch])
 
   const loadCategories = useCallback(async () => {
     try {
@@ -74,7 +76,7 @@ export const ExpensesView: React.FC = () => {
   const loadExpenses = useCallback(async () => {
     setLoading(true)
     try {
-      const data = await expenseService.getExpenses({
+      const data = await expenseService.getExpenses(branch, {
         fromDate: fromDate || undefined,
         toDate: toDate || undefined,
         categoryId: selectedCategoryId !== 'all' ? selectedCategoryId : undefined,
@@ -85,7 +87,7 @@ export const ExpensesView: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }, [fromDate, toDate, selectedCategoryId])
+  }, [branch, fromDate, toDate, selectedCategoryId])
 
   const refreshAll = useCallback(async () => {
     await Promise.all([loadMetrics(), loadCategories(), loadExpenses()])
@@ -585,6 +587,7 @@ export const ExpensesView: React.FC = () => {
             onSuccess={handleExpenseSaved}
             categories={categories}
             expenseToEdit={editingExpense}
+            branch={branch}
           />
         </div>
       )}

@@ -860,7 +860,7 @@ export default function Dashboard() {
         supabase.from('coupons')
           .select('id, code, percentage, is_active, expiry_date, usage_limit, usage_count, min_order_value')
           .order('created_at', { ascending: false }),
-        expenseService.getExpenses(),
+        expenseService.getExpenses(branch),
       ])
       if (cRes.error) throw cRes.error
       if (oRes.error) throw oRes.error

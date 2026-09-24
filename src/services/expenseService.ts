@@ -1,4 +1,5 @@
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
+import type { PosBranch } from '../store/store'
 
 export interface ExpenseRecord {
   id: string
@@ -9,6 +10,7 @@ export interface ExpenseRecord {
   description: string
   payment_mode?: string
   recorded_by_name?: string
+  branch?: PosBranch
   created_at: string
   updated_at?: string
 }
@@ -125,10 +127,10 @@ function calculateMetricsFromList(expenses: ExpenseRecord[]): ExpenseSummaryMetr
 
 export const expenseService = {
   // 1. Fetch KPI Metrics
-  async getMetrics(): Promise<ExpenseSummaryMetrics> {
+  async getMetrics(branch: PosBranch): Promise<ExpenseSummaryMetrics> {
     if (isSupabaseConfigured && remoteExpensesAvailable !== false) {
       try {
-        const { data, error } = await supabase.rpc('get_expense_summary_metrics')
+        const { data, error } = await supabase.rpc('get_expense_summary_metrics', { p_branch: branch })
         if (!error && data) {
           remoteExpensesAvailable = true
           return {
@@ -149,17 +151,18 @@ export const expenseService = {
     }
 
     // Direct local / remote list fallback
-    const list = await this.getExpenses()
+    const list = await this.getExpenses(branch)
     return calculateMetricsFromList(list)
   },
 
   // 2. Fetch Expenses with Date Filtering
-  async getExpenses(filters?: ExpenseFilterPayload): Promise<ExpenseRecord[]> {
+  async getExpenses(branch: PosBranch, filters?: ExpenseFilterPayload): Promise<ExpenseRecord[]> {
     if (isSupabaseConfigured && remoteExpensesAvailable !== false) {
       try {
         let query = supabase
           .from('expenses')
           .select('*')
+          .eq('branch', branch)
           .order('expense_date', { ascending: false })
           .order('created_at', { ascending: false })
 
@@ -196,7 +199,7 @@ export const expenseService = {
     }
 
     // Local Storage Filter
-    let local = loadLocalExpenses()
+    let local = loadLocalExpenses().filter((e) => (e.branch || 'pos1') === branch)
     if (filters?.fromDate) {
       local = local.filter((e) => e.expense_date >= filters.fromDate!)
     }
@@ -223,6 +226,7 @@ export const expenseService = {
     description?: string
     payment_mode?: string
     recorded_by_name?: string
+    branch: PosBranch
   }): Promise<ExpenseRecord> {
     const newRecord: ExpenseRecord = {
       id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : `exp_${Date.now()}`,
@@ -233,6 +237,7 @@ export const expenseService = {
       description: (payload.description || '').trim(),
       payment_mode: payload.payment_mode || 'cash',
       recorded_by_name: payload.recorded_by_name || 'Staff',
+      branch: payload.branch,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }
@@ -249,6 +254,7 @@ export const expenseService = {
             description: newRecord.description,
             payment_mode: newRecord.payment_mode,
             recorded_by_name: newRecord.recorded_by_name,
+            branch: newRecord.branch,
           })
           .select()
           .single()

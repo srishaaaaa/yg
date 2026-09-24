@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X, Calendar, Tag, AlertCircle, Edit2 } from 'lucide-react'
 import { expenseService, type ExpenseCategory, type ExpenseRecord } from '../../services/expenseService'
+import type { PosBranch } from '../../store/store'
 
 interface RecordExpenseModalProps {
   isOpen: boolean
@@ -9,6 +10,7 @@ interface RecordExpenseModalProps {
   onSuccess: (savedExpense: ExpenseRecord) => void
   categories: ExpenseCategory[]
   expenseToEdit?: ExpenseRecord | null
+  branch: PosBranch
 }
 
 export const RecordExpenseModal: React.FC<RecordExpenseModalProps> = ({
@@ -17,6 +19,7 @@ export const RecordExpenseModal: React.FC<RecordExpenseModalProps> = ({
   onSuccess,
   categories,
   expenseToEdit,
+  branch,
 }) => {
   const [expenseDate, setExpenseDate] = useState(() => new Date().toISOString().slice(0, 10))
   const [categoryId, setCategoryId] = useState<number | string>(() => categories[0]?.id || '')
@@ -100,6 +103,7 @@ export const RecordExpenseModal: React.FC<RecordExpenseModalProps> = ({
           description: description.trim(),
           payment_mode: 'cash',
           recorded_by_name: 'Admin',
+          branch,
         })
         onSuccess(created)
       }
