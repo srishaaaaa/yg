@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { createPortal } from 'react-dom'
 import { X, PlusCircle, AlertCircle } from 'lucide-react'
 import { useLangStore } from '../../store/langStore'
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 
 interface Props {
   isOpen: boolean
@@ -24,6 +25,8 @@ export const AddUnregisteredItemModal: React.FC<Props> = ({ isOpen, onClose, onS
   const [note, setNote] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  useBodyScrollLock(isOpen)
 
   if (!isOpen) return null
 

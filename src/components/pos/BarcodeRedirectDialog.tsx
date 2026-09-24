@@ -2,6 +2,7 @@ import React from 'react'
 import { createPortal } from 'react-dom'
 import { AlertCircle, ShoppingCart, X, ScanBarcode } from 'lucide-react'
 import { useNavigationStore } from '../../store/navigationStore'
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 
 export interface BarcodeRedirectDialogProps {
   onNavigateToBilling?: (barcode: string) => void
@@ -12,6 +13,8 @@ export const BarcodeRedirectDialog: React.FC<BarcodeRedirectDialogProps> = ({
 }) => {
   const { pendingBarcode, setPendingBarcode, setCurrentTab, setExternalScannedCode } =
     useNavigationStore()
+
+  useBodyScrollLock(Boolean(pendingBarcode))
 
   if (!pendingBarcode) return null
 

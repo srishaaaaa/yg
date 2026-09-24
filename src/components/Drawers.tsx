@@ -6,11 +6,13 @@ import { useLangStore } from '../store/langStore'
 import { Link } from 'react-router-dom'
 import { formatCurrency, formatQuantityDisplay, getDefaultQuantityForProduct } from '../lib/retail'
 import { PLACEHOLDER as PRODUCT_PLACEHOLDER } from '../lib/productImages'
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 
 export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { items, remove, updateQty, total, count, clear } = useCartStore()
   const { t, lang } = useLangStore()
   const orderTotal = total()
+  useBodyScrollLock(open)
 
   const getStep = (item: (typeof items)[number]) => {
     if (item.unitType === 'unit' || item.unitType === 'bundle') return 1
@@ -94,6 +96,7 @@ export function FavoritesDrawer({ open, onClose }: { open: boolean; onClose: () 
   const { items, toggle } = useFavStore()
   const { t, lang } = useLangStore()
   const add = useCartStore(s => s.add)
+  useBodyScrollLock(open)
 
   return createPortal(
     <AnimatePresence>

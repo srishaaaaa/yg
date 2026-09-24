@@ -3,12 +3,15 @@ import { createPortal } from 'react-dom'
 import { AlertTriangle, Volume2, VolumeX, Barcode, Package, ChevronRight } from 'lucide-react'
 import { useAlarmStore } from '../../store/alarmStore'
 import { alarmSound } from '../../lib/alarmAudio'
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 
 export const LowStockAlarmModal: React.FC = () => {
   const isAlarmActive = useAlarmStore((state) => state.isAlarmActive)
   const lowStockItems = useAlarmStore((state) => state.lowStockItems)
   const silenceAlarm = useAlarmStore((state) => state.silenceAlarm)
   const [isAudioBlocked, setIsAudioBlocked] = useState(() => alarmSound.isBlocked())
+
+  useBodyScrollLock(isAlarmActive && lowStockItems.length > 0)
 
   useEffect(() => {
     setIsAudioBlocked(alarmSound.isBlocked())

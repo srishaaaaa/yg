@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState, useMemo, useRef, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 import {
   BarChart2, Trash2, Edit2, List, ShoppingCart, LayoutDashboard,
   Box, AlertCircle, ArrowUp, ArrowDown, Power, Download, TrendingUp, TrendingDown,
@@ -273,6 +274,7 @@ export default function Dashboard() {
   const [analyticsTab, setAnalyticsTab] = useState('revenue')
 
   const [invoicePreviewOrder, setInvoicePreviewOrder] = useState<DashboardOrder | null>(null)
+  useBodyScrollLock(Boolean(invoicePreviewOrder))
 
   // WA detail expansion
   const [waExpandedId, setWaExpandedId] = useState<string | null>(null)

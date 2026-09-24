@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, useCallback, type FormEvent } fro
 import { createPortal } from 'react-dom'
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Link, useNavigate } from 'react-router-dom'
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 import {
   Search, Trash2, Plus, Receipt, Printer,
   RefreshCw, ShoppingBag, MessageCircle,
@@ -190,6 +191,8 @@ export default function Pos(props: PosProps = {}) {
     error: '',
   })
   const searchRef = useRef<HTMLInputElement>(null)
+
+  useBodyScrollLock(depositOpen || Boolean(depositCreated) || Boolean(variantPickerProduct) || Boolean(priceEditModal.isOpen && priceEditModal.item))
 
   useEffect(() => {
     void fetchProducts(branch)

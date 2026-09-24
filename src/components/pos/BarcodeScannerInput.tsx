@@ -5,6 +5,7 @@ import { BrowserMultiFormatReader, type IScannerControls } from '@zxing/browser'
 import { barcodeService } from '../../services/barcodeService'
 import { BRAND_EN } from '../../lib/brand'
 import { normalizeBarcode } from '../../lib/barcode'
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 
 export interface ScannedItemPayload {
   product_id: number
@@ -37,6 +38,7 @@ export const BarcodeScannerInput: React.FC<BarcodeScannerInputProps> = ({
 
   // Camera scanner state
   const [isCameraOpen, setIsCameraOpen] = useState(false)
+  useBodyScrollLock(isCameraOpen)
   const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([])
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>('')
   const videoRef = useRef<HTMLVideoElement>(null)

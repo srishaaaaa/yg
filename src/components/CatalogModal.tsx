@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { X, Search, ShoppingBag, Edit2, Trash2 } from 'lucide-react'
 import { useProductStore, type Product, type PosBranch } from '../store/store'
 import { supabase } from '../lib/supabase'
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 
 interface CatalogModalProps {
   isOpen: boolean
@@ -22,6 +23,8 @@ export default function CatalogModal({ isOpen, branch, onClose, onAdd }: Catalog
   const [editLoading, setEditLoading] = useState(false)
   const [editError, setEditError] = useState('')
   const [categoryOptions, setCategoryOptions] = useState<CategoryOption[]>([])
+
+  useBodyScrollLock(isOpen)
 
   useEffect(() => {
     if (isOpen) void fetchProducts(branch, true)

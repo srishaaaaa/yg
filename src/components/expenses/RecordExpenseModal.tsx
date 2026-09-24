@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { X, Calendar, Tag, AlertCircle, Edit2 } from 'lucide-react'
 import { expenseService, type ExpenseCategory, type ExpenseRecord } from '../../services/expenseService'
 import type { PosBranch } from '../../store/store'
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 
 interface RecordExpenseModalProps {
   isOpen: boolean
@@ -57,16 +58,7 @@ export const RecordExpenseModal: React.FC<RecordExpenseModalProps> = ({
   }, [isOpen, onClose])
 
   // Lock background scrolling when open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
+  useBodyScrollLock(isOpen)
 
   if (!isOpen) return null
 

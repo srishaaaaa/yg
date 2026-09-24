@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight, X, ZoomIn } from 'lucide-react'
 import { galleryImages, type GalleryImage } from '../data/galleryImages'
 import { BRAND_EN } from '../lib/brand'
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 
 // ── Lightbox ────────────────────────────────────────────────────────────────
 function Lightbox({
@@ -21,6 +22,8 @@ function Lightbox({
   const prev = () => setCurrent((i) => (i - 1 + images.length) % images.length)
   const next = () => setCurrent((i) => (i + 1) % images.length)
 
+  useBodyScrollLock(true)
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -28,11 +31,8 @@ function Lightbox({
       if (e.key === 'ArrowRight') next()
     }
     window.addEventListener('keydown', onKey)
-    const original = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
     return () => {
       window.removeEventListener('keydown', onKey)
-      document.body.style.overflow = original
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
