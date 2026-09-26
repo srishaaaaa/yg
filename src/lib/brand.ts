@@ -1,6 +1,7 @@
 export const BRAND_EN = 'YG ENTERPRISES'
 export const BRAND_TA = 'YG ENTERPRISES'
 export const BRAND_SHORT = 'YG'
+export const BRAND_MONOGRAM = 'YG'
 export const BRAND_SUBTITLE = 'Wedding Card, Wedding Bag and Jute Bag Manufacturing'
 export const BRAND_LOGO = '/yg-logo.png'
 export const BRAND_ICON = '/yg-icon.png'
