@@ -343,23 +343,31 @@ export const CategoryManagerView: React.FC = () => {
                           {cat.is_active !== false ? 'Active' : 'Inactive'}
                         </span>
                       </td>
-                      <td className="p-3 text-right">
+                      <td className="p-3 text-right pointer-events-auto">
                         <div className="flex items-center justify-end gap-2">
                           <button
                             type="button"
-                            onClick={(e) => { e.stopPropagation(); startEdit(cat) }}
-                            className="p-2.5 rounded-xl border border-gray-200 text-gray-600 hover:text-black hover:bg-gray-100 active:bg-gray-200 transition-colors cursor-pointer touch-manipulation select-none"
-                            title="Edit"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              startEdit(cat)
+                            }}
+                            className="inline-flex items-center justify-center p-2 sm:p-2.5 rounded-lg sm:rounded-xl border border-gray-300 text-gray-600 hover:text-black hover:bg-gray-100 active:bg-gray-200 transition-all cursor-pointer touch-manipulation select-none focus:outline-none focus:ring-2 focus:ring-gray-400"
+                            title="Edit category"
                           >
-                            <Edit2 size={14} />
+                            <Edit2 size={16} />
                           </button>
                           <button
                             type="button"
-                            onClick={(e) => { e.stopPropagation(); void handleDelete(cat) }}
-                            className="p-2.5 rounded-xl border border-gray-200 text-gray-400 hover:text-red-600 hover:bg-red-50 active:bg-red-100 transition-colors cursor-pointer touch-manipulation select-none"
-                            title="Delete"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              void handleDelete(cat)
+                            }}
+                            className="inline-flex items-center justify-center p-2 sm:p-2.5 rounded-lg sm:rounded-xl border border-gray-300 text-gray-500 hover:text-red-600 hover:bg-red-50 active:bg-red-100 transition-all cursor-pointer touch-manipulation select-none focus:outline-none focus:ring-2 focus:ring-red-400"
+                            title="Delete category"
                           >
-                            <Trash2 size={14} />
+                            <Trash2 size={16} />
                           </button>
                         </div>
                       </td>
