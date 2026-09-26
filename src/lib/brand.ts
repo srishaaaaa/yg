@@ -2,6 +2,13 @@ export const BRAND_EN = 'YG ENTERPRISES'
 export const BRAND_TA = 'YG ENTERPRISES'
 export const BRAND_SHORT = 'YG'
 export const BRAND_MONOGRAM = 'YG'
+
+// Branch-specific barcode prefixes for inventory differentiation
+export function getBarcodePrefix(branch?: string): string {
+  if (branch === 'pos2') return 'YG2'
+  return 'YG1' // Default to POS1
+}
+
 export const BRAND_SUBTITLE = 'Wedding Card, Wedding Bag and Jute Bag Manufacturing'
 export const BRAND_LOGO = '/yg-logo.png'
 export const BRAND_ICON = '/yg-icon.png'

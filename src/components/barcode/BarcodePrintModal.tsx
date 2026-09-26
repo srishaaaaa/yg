@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X, Printer, Copy, Check } from 'lucide-react'
 import { BarcodeLabel } from './BarcodeLabel'
-import { BRAND_EN } from '../../lib/brand'
+import { BRAND_EN, getBarcodePrefix } from '../../lib/brand'
 import { getAllLabelSizes, generateBarcodeSvgString, getStoredBarcodeSettings, saveStoredBarcodeSettings } from '../../lib/barcode'
 
 export interface BarcodePrintModalProps {
