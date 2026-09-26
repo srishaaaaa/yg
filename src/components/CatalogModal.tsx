@@ -195,8 +195,11 @@ export default function CatalogModal({ isOpen, branch, onClose, onAdd }: Catalog
               </div>
               <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
                 {categories.map(cat => (
-                  <button key={cat} onClick={() => setActiveCategory(cat)}
-                    className={`px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider whitespace-nowrap transition-colors ${activeCategory === cat ? 'bg-[#D4AF37] text-white' : 'bg-[#FAFAFA] text-[#374151] hover:bg-[#F9FAFB] border border-[#E5E7EB]/60'}`}>
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveCategory(cat) }}
+                    className={`px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer touch-manipulation select-none ${activeCategory === cat ? 'bg-[#D4AF37] text-white shadow-md' : 'bg-[#FAFAFA] text-[#374151] hover:bg-[#F9FAFB] border border-[#E5E7EB]/60'}`}>
                     {cat}
                   </button>
                 ))}
