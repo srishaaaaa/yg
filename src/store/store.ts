@@ -155,6 +155,7 @@ export interface StoreSettings {
   instagramId: string
   logoUrl: string | null
   themeColor: string
+  websiteUrl?: string
   gstEnabled: boolean
 }
 
