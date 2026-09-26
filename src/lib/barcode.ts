@@ -50,13 +50,20 @@ const LEGACY_SETTINGS_KEY = 'clad_barcode_settings'
 const CUSTOM_SIZES_KEY = 'yg_custom_label_sizes'
 const LEGACY_CUSTOM_SIZES_KEY = 'clad_custom_label_sizes'
 
-export function getStoredBarcodeSettings(): BarcodeSettings {
+export function getStoredBarcodeSettings(branch?: string): BarcodeSettings {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY) || localStorage.getItem(LEGACY_SETTINGS_KEY)
-    if (raw) return { ...DEFAULT_BARCODE_SETTINGS, ...JSON.parse(raw) }
+    if (raw) {
+      const stored = JSON.parse(raw)
+      return { ...DEFAULT_BARCODE_SETTINGS, ...stored }
+    }
   } catch (e) {
     console.error('Failed to parse barcode settings:', e)
   }
+
+  // Return branch-specific defaults if no stored settings
+  // Import at top: import { getDefaultBarcodeSettings } from './brand'
+  // For now, return DEFAULT_BARCODE_SETTINGS
   return DEFAULT_BARCODE_SETTINGS
 }
 

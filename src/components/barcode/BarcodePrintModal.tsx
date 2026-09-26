@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X, Printer, Copy, Check } from 'lucide-react'
 import { BarcodeLabel } from './BarcodeLabel'
-import { BRAND_EN, getBarcodePrefix } from '../../lib/brand'
+import { BRAND_EN, getBarcodePrefix, getDefaultBarcodeSettings } from '../../lib/brand'
 import { getAllLabelSizes, generateBarcodeSvgString, getStoredBarcodeSettings, saveStoredBarcodeSettings } from '../../lib/barcode'
+import { useAdminAuthStore, resolveBranch } from '../../store/store'
 
 export interface BarcodePrintModalProps {
   isOpen: boolean
@@ -45,12 +46,18 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   mrp,
   defaultQuantity = 1,
 }) => {
+  const branch = useAdminAuthStore((state) => resolveBranch(state.activeBranch))
   const presets = getAvailablePresets()
   const [quantity, setQuantity] = useState<string>(String(defaultQuantity || 1))
-  const [selectedPreset, setSelectedPreset] = useState<LabelSizePreset>(presets[0] || { name: 'Thermal Standard', widthMm: 50, heightMm: 25, labelsPerRow: 1, horizontalGapMm: 0 })
+  const branchDefaults = getDefaultBarcodeSettings(branch)
+  const storedSettings = getStoredBarcodeSettings()
+  const [selectedPreset, setSelectedPreset] = useState<LabelSizePreset>(
+    presets.find(p => p.widthMm === branchDefaults.selectedSizeId.split('x')[0]) || presets[0] ||
+    { name: 'Thermal Standard', widthMm: 50, heightMm: 25, labelsPerRow: 1, horizontalGapMm: 0 }
+  )
   const [copied, setCopied] = useState(false)
   const [printerType, setPrinterType] = useState<'label' | 'regular'>(() => {
-    return getStoredBarcodeSettings().printerType || 'label'
+    return storedSettings.printerType || branchDefaults.printerType
   })
 
   const handlePrinterTypeChange = (type: 'label' | 'regular') => {

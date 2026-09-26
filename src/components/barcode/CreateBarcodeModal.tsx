@@ -21,7 +21,7 @@ import {
   renderBarcodeSvg,
   generateBarcodeSvgString,
 } from '../../lib/barcode'
-import { BRAND_EN, BRAND_MONOGRAM, getBarcodePrefix } from '../../lib/brand'
+import { BRAND_EN, BRAND_MONOGRAM, getBarcodePrefix, getDefaultBarcodeSettings } from '../../lib/brand'
 import { barcodeService } from '../../services/barcodeService'
 import { fetchVariantsByProduct, type ProductVariant } from '../../services/variantService'
 import { useProductStore, useAdminAuthStore, resolveBranch } from '../../store/store'
@@ -60,8 +60,13 @@ export const CreateBarcodeModal: React.FC<CreateBarcodeModalProps> = ({
   const branch = useAdminAuthStore((state) => resolveBranch(state.activeBranch))
   const barcodePrefix = getBarcodePrefix(branch)
 
-  // Settings
-  const [settings, setSettings] = useState<BarcodeSettings>(getStoredBarcodeSettings())
+  // Settings - Use branch-specific defaults, fall back to stored settings
+  const [settings, setSettings] = useState<BarcodeSettings>(() => {
+    const stored = getStoredBarcodeSettings()
+    const branchDefaults = getDefaultBarcodeSettings(branch)
+    // Merge: stored settings override branch defaults
+    return { ...branchDefaults, ...stored }
+  })
   const [showSettingsDrawer, setShowSettingsDrawer] = useState(false)
   const [showSheetPreviewModal, setShowSheetPreviewModal] = useState(false)
   const [updateStock, setUpdateStock] = useState(false)
