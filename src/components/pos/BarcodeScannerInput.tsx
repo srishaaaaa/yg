@@ -100,8 +100,11 @@ export const BarcodeScannerInput: React.FC<BarcodeScannerInputProps> = ({
     targetInput: null,
   })
 
-  // Audio Beep generator via Web Audio API
+  // Audio Beep generator via Web Audio API (muted by default - only plays on success)
   const playBeep = (isSuccess = true) => {
+    // Only play beep on success to avoid unnecessary error sounds
+    if (!isSuccess) return
+
     try {
       const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
       if (!AudioCtx) return
@@ -109,15 +112,15 @@ export const BarcodeScannerInput: React.FC<BarcodeScannerInputProps> = ({
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()
 
-      osc.type = isSuccess ? 'sine' : 'square'
-      osc.frequency.setValueAtTime(isSuccess ? 1800 : 300, ctx.currentTime)
-      gain.gain.setValueAtTime(0.15, ctx.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + (isSuccess ? 0.08 : 0.25))
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(1800, ctx.currentTime)
+      gain.gain.setValueAtTime(0.1, ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08)
 
       osc.connect(gain)
       gain.connect(ctx.destination)
       osc.start()
-      osc.stop(ctx.currentTime + (isSuccess ? 0.08 : 0.25))
+      osc.stop(ctx.currentTime + 0.08)
     } catch {
       // Audio context might be restricted before first user interaction
     }

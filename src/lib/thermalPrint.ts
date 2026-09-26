@@ -105,7 +105,7 @@ export function printThermalReceipt(data: ThermalReceiptData) {
       </head>
       <body>
         <div class="text-center mb-2">
-          <img src="${logoSrc}" style="width: 48px; height: 48px; object-fit: contain; margin: 0 auto 6px auto; display: block;" alt="YG Logo" />
+          <img src="${logoSrc}" style="width: 64px; height: 64px; object-fit: contain; margin: 0 auto 8px auto; display: block;" alt="YG Logo" />
           <div class="font-bold" style="font-size: 16px; letter-spacing: 2px;">${data.storeName || BRAND_EN}</div>
           <div style="font-size: 10px; margin-top: 2px;">${data.storeAddress || BRAND_ADDRESS}</div>
           <div class="mt-1" style="font-size: 10px;">Ph: ${data.storePhone || BRAND_PRIMARY_PHONE_DISPLAY}</div>
@@ -159,7 +159,7 @@ export function printThermalReceipt(data: ThermalReceiptData) {
               </tr>
             ` : ''}
             ${(data.couponDiscount || 0) > 0 ? `
-              <tr>
+              <tr style="font-size: 13px; font-weight: bold;">
                 <td class="text-left">Coupon</td>
                 <td class="text-right">-${formatCurrency(data.couponDiscount || 0)}</td>
               </tr>
@@ -171,7 +171,7 @@ export function printThermalReceipt(data: ThermalReceiptData) {
               </tr>
             ` : ''}
             ${(data.totalGst || 0) > 0 ? `
-              <tr>
+              <tr style="font-size: 10px;">
                 <td class="text-left">GST</td>
                 <td class="text-right">+${formatCurrency(data.totalGst || 0)}</td>
               </tr>

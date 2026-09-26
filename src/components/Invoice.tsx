@@ -81,7 +81,7 @@ export const Invoice: React.FC<InvoiceProps> = ({
     >
       {/* ── HEADER ────────────────────────────────────────────────── */}
       <div className="invoice-header" style={{ textAlign: 'center', borderBottom: '1px solid #E8D399', paddingBottom: 20, marginBottom: 20 }}>
-        <div style={{ width: 64, height: 64, margin: '0 auto 10px auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 100, height: 100, margin: '0 auto 16px auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <img src={branch ? branchLogo(branch) : BRAND_ICON} alt={BRAND_EN} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
         </div>
         <div style={{ fontSize: 24, fontWeight: 900, color: '#7A1220', letterSpacing: 2, textTransform: 'uppercase' }}>
@@ -192,10 +192,10 @@ export const Invoice: React.FC<InvoiceProps> = ({
             </div>
             {discountAmount > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                <span style={{ fontSize: 12, color: '#B48811' }}>
+                <span style={{ fontSize: 13, color: '#B48811', fontWeight: 600 }}>
                   Coupon{couponCode ? ` (${couponCode})` : ''}
                 </span>
-                <span style={{ fontSize: 12, fontWeight: 700, color: '#B48811', fontVariantNumeric: 'tabular-nums' }}>−{formatCurrency(discountAmount)}</span>
+                <span style={{ fontSize: 15, fontWeight: 800, color: '#B48811', fontVariantNumeric: 'tabular-nums' }}>−{formatCurrency(discountAmount)}</span>
               </div>
             )}
             {manualDiscountAmount > 0 && (
@@ -206,8 +206,8 @@ export const Invoice: React.FC<InvoiceProps> = ({
             )}
             {gstAmount > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                <span style={{ fontSize: 12, color: '#666' }}>GST</span>
-                <span style={{ fontSize: 12, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>+{formatCurrency(gstAmount)}</span>
+                <span style={{ fontSize: 10, color: '#666' }}>GST</span>
+                <span style={{ fontSize: 10, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>+{formatCurrency(gstAmount)}</span>
               </div>
             )}
             {effectiveDelivery > 0 && (

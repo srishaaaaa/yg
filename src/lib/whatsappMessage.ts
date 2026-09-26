@@ -1,5 +1,5 @@
 import { formatInvoiceNo } from './retail'
-import { BRAND_EN, BRAND_INSTAGRAM, BRAND_INSTAGRAM_URL, BRAND_PRIMARY_PHONE_DISPLAY, BRAND_PRODUCTION_DOMAIN } from './brand'
+import { BRAND_EN, BRAND_INSTAGRAM, BRAND_INSTAGRAM_URL, BRAND_PRIMARY_PHONE_DISPLAY, BRAND_PRODUCTION_DOMAIN, BRAND_WEBSITE } from './brand'
 
 export type WhatsAppLineItem = {
   name: string
@@ -68,6 +68,9 @@ Thank you for shopping at ${BRAND_EN}! We truly appreciate your patronage.
 ${input.invoiceDate ? `📅 *Date:* ${new Date(input.invoiceDate).toLocaleDateString('en-IN')}\n` : ''}${input.paymentMode ? `💳 *Payment Mode:* ${input.paymentMode}\n` : ''}${input.total !== undefined ? `💰 *Total Amount:* ₹ ${Number(input.total || 0).toFixed(2)}\n` : ''}
 ${itemsText ? `📦 *ITEMS ORDERED:*\n${itemsText}\n\n` : ''}📄 *View & Download Digital Invoice / PDF:*
 👉 ${invoiceUrl}
+
+🌐 *Visit Our Official Website:*
+👉 ${BRAND_WEBSITE}
 
 📞 *Shop Contact:* ${BRAND_PRIMARY_PHONE_DISPLAY}
 📷 *Follow us on Instagram:* ${BRAND_INSTAGRAM_URL}

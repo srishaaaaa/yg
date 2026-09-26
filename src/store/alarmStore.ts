@@ -26,28 +26,32 @@ export const useAlarmStore = create<AlarmState>((set, get) => ({
   silencedItemIds: new Set<string | number>(),
 
   setLowStockItems: (items) => {
-    const { silencedItemIds, lowStockItems: previousItems } = get()
-    
+    const { silencedItemIds, lowStockItems: previousItems, isAlarmActive: wasAlarmActive } = get()
+
     // Alarm triggers only if there is at least one low-stock item that has not been acknowledged
     const hasUnsilencedLowStock = items.some(
       (item) => !silencedItemIds.has(String(item.id)) && !silencedItemIds.has(item.id)
     )
 
+    // Check if the items list has actually changed (comparing IDs)
+    const previousIds = previousItems.map(i => String(i.id)).sort().join(',')
+    const currentIds = items.map(i => String(i.id)).sort().join(',')
+    const itemsChanged = previousIds !== currentIds
+
     if (items.length > 0 && hasUnsilencedLowStock) {
-      // Check if alarm was already active - if not, make sure to start it
-      const wasAlarmActive = get().isAlarmActive
-      
-      // Always start/restart the alert to ensure sound plays
-      alarmSound.startAlert()
-      set({ lowStockItems: items, isAlarmActive: true })
-      
-      // If alarm wasn't active before, this is a new alert - log it for debugging
-      if (!wasAlarmActive) {
-        console.log('[Low Stock Alert] New low stock items detected:', items.length)
+      // Only start/restart alarm if items have changed or alarm wasn't previously active
+      if (itemsChanged || !wasAlarmActive) {
+        alarmSound.startAlert()
+        if (!wasAlarmActive) {
+          console.log('[Low Stock Alert] New low stock items detected:', items.length)
+        }
       }
+      set({ lowStockItems: items, isAlarmActive: true })
     } else {
       // If no items or all items are acknowledged/silenced, ensure alert is stopped
-      alarmSound.stopAlert()
+      if (wasAlarmActive) {
+        alarmSound.stopAlert()
+      }
       set({ lowStockItems: items, isAlarmActive: false })
       if (items.length === 0) {
         set({ silencedItemIds: new Set() })

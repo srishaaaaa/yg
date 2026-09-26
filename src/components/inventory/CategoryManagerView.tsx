@@ -108,6 +108,8 @@ export const CategoryManagerView: React.FC = () => {
       }
     }
 
+    setErrorMessage('')
+    setSuccessMessage('')
     try {
       await inventoryService.deleteCategory(cat.id, branch)
       setSuccessMessage(`Category "${cat.name_en}" deleted.`)
@@ -115,6 +117,7 @@ export const CategoryManagerView: React.FC = () => {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to delete category'
       setErrorMessage(msg)
+      console.error('Delete category error:', err)
     }
   }
 
@@ -344,16 +347,16 @@ export const CategoryManagerView: React.FC = () => {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             type="button"
-                            onClick={() => startEdit(cat)}
-                            className="p-2.5 rounded-xl border border-gray-200 text-gray-600 hover:text-black hover:bg-gray-100 active:bg-gray-200 transition-colors cursor-pointer touch-manipulation"
+                            onClick={(e) => { e.stopPropagation(); startEdit(cat) }}
+                            className="p-2.5 rounded-xl border border-gray-200 text-gray-600 hover:text-black hover:bg-gray-100 active:bg-gray-200 transition-colors cursor-pointer touch-manipulation select-none"
                             title="Edit"
                           >
                             <Edit2 size={14} />
                           </button>
                           <button
                             type="button"
-                            onClick={() => handleDelete(cat)}
-                            className="p-2.5 rounded-xl border border-gray-200 text-gray-400 hover:text-red-600 hover:bg-red-50 active:bg-red-100 transition-colors cursor-pointer touch-manipulation"
+                            onClick={(e) => { e.stopPropagation(); void handleDelete(cat) }}
+                            className="p-2.5 rounded-xl border border-gray-200 text-gray-400 hover:text-red-600 hover:bg-red-50 active:bg-red-100 transition-colors cursor-pointer touch-manipulation select-none"
                             title="Delete"
                           >
                             <Trash2 size={14} />

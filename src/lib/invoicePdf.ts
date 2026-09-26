@@ -54,16 +54,16 @@ export function createInvoicePdf(data: InvoicePdfData): Blob {
   y += 10
 
   try {
-    doc.addImage(data.branch === 'pos2' ? LOGO_BASE64_POS2 : LOGO_BASE64_POS1, 'PNG', left, y, 20, 20)
+    doc.addImage(data.branch === 'pos2' ? LOGO_BASE64_POS2 : LOGO_BASE64_POS1, 'PNG', left, y, 30, 30)
   } catch {
     doc.setTextColor(primaryColor)
     doc.setFontSize(16)
-    doc.text(BRAND_EN, left, y + 10)
+    doc.text(BRAND_EN, left, y + 15)
   }
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(13)
   doc.setTextColor(primaryColor)
-  doc.text(BRAND_EN, left + 24, y + 5)
+  doc.text(BRAND_EN, left + 34, y + 8)
   doc.setFontSize(8)
   doc.setTextColor(muted)
   doc.setFont('helvetica', 'normal')
@@ -138,13 +138,12 @@ export function createInvoicePdf(data: InvoicePdfData): Blob {
   })
 
   y = Math.max(y + 6, 150)
-  const rows: Array<[string, string, string]> = [['Subtotal', money(data.subtotal), ink]]
-  if ((data.discountAmount || 0) > 0) rows.push([`Coupon${data.couponCode ? ` (${data.couponCode})` : ''}`, `-${money(data.discountAmount || 0)}`, '#D4AF37'])
-  if ((data.manualDiscountAmount || 0) > 0) rows.push(['Discount', `-${money(data.manualDiscountAmount || 0)}`, '#D4AF37'])
-  if ((data.gstAmount || 0) > 0) rows.push(['GST', money(data.gstAmount || 0), ink])
-  rows.push(['Delivery', (data.shipping || 0) > 0 ? money(data.shipping) : 'FREE', ink])
-  doc.setFontSize(9)
-  rows.forEach(([label, value, color]) => { doc.setFont('helvetica', 'normal'); doc.setTextColor(color); doc.text(label, 143, y, { align: 'right' }); doc.text(value, right - 4, y, { align: 'right' }); y += 7 })
+  const rows: Array<[string, string, string, number]> = [['Subtotal', money(data.subtotal), ink, 9]]
+  if ((data.discountAmount || 0) > 0) rows.push([`Coupon${data.couponCode ? ` (${data.couponCode})` : ''}`, `-${money(data.discountAmount || 0)}`, '#D4AF37', 11])
+  if ((data.manualDiscountAmount || 0) > 0) rows.push(['Discount', `-${money(data.manualDiscountAmount || 0)}`, '#D4AF37', 9])
+  if ((data.gstAmount || 0) > 0) rows.push(['GST', money(data.gstAmount || 0), ink, 7])
+  rows.push(['Delivery', (data.shipping || 0) > 0 ? money(data.shipping) : 'FREE', ink, 9])
+  rows.forEach(([label, value, color, fontSize]) => { doc.setFont('helvetica', 'normal'); doc.setFontSize(fontSize); doc.setTextColor(color); doc.text(label, 143, y, { align: 'right' }); doc.text(value, right - 4, y, { align: 'right' }); y += 7 })
   doc.setDrawColor(primaryColor)
   doc.setLineWidth(0.7)
   doc.line(118, y - 3, right, y - 3)

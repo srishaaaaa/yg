@@ -21,8 +21,7 @@ export interface AdjustStockModalProps {
   onSuccess?: () => void
 }
 
-type AdjustMode = 'RESTOCK' | 'REMOVE' | 'CORRECTION'
-type RemoveReason = 'DAMAGE' | 'RETURN' | 'CORRECTION'
+type AdjustMode = 'RESTOCK' | 'CUSTOMER_RETURN' | 'LOSS_DAMAGE' | 'RECONCILIATION'
 
 export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
   isOpen,
@@ -33,7 +32,6 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
   const [mode, setMode] = useState<AdjustMode>('RESTOCK')
   const [addQuantity, setAddQuantity] = useState<number | ''>(0)
   const [removeQuantity, setRemoveQuantity] = useState<number | ''>(0)
-  const [removeReason, setRemoveReason] = useState<RemoveReason>('DAMAGE')
   const [correctedQuantity, setCorrectedQuantity] = useState<number | ''>(0)
   const [note, setNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -44,7 +42,6 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
       setMode('RESTOCK')
       setAddQuantity(0)
       setRemoveQuantity(0)
-      setRemoveReason('DAMAGE')
       setCorrectedQuantity(item.stock)
       setNote('')
       setError('')
@@ -77,16 +74,20 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
   // Calculate effective new total stock and delta based on active mode
   let effectiveNewStock = currentStock
   let delta = 0
-  let effectiveReason: 'RESTOCK' | 'DAMAGE' | 'CORRECTION' | 'RETURN' = 'RESTOCK'
+  let effectiveReason: 'RESTOCK' | 'RETURN' | 'DAMAGE' | 'CORRECTION' = 'RESTOCK'
 
   if (mode === 'RESTOCK') {
     effectiveNewStock = currentStock + Math.max(0, numAdd)
     delta = numAdd
     effectiveReason = 'RESTOCK'
-  } else if (mode === 'REMOVE') {
+  } else if (mode === 'CUSTOMER_RETURN') {
+    effectiveNewStock = currentStock + Math.max(0, numAdd)
+    delta = numAdd
+    effectiveReason = 'RETURN'
+  } else if (mode === 'LOSS_DAMAGE') {
     effectiveNewStock = Math.max(0, currentStock - Math.max(0, numRemove))
     delta = -Math.min(currentStock, Math.max(0, numRemove))
-    effectiveReason = removeReason
+    effectiveReason = 'DAMAGE'
   } else {
     effectiveNewStock = Math.max(0, numCorrected)
     delta = effectiveNewStock - currentStock
@@ -97,12 +98,12 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
     e.preventDefault()
     setError('')
 
-    if (mode === 'RESTOCK' && numAdd <= 0) {
+    if ((mode === 'RESTOCK' || mode === 'CUSTOMER_RETURN') && numAdd <= 0) {
       setError('Please enter a valid quantity to add (minimum 1 unit)')
       return
     }
 
-    if (mode === 'REMOVE') {
+    if (mode === 'LOSS_DAMAGE') {
       if (numRemove <= 0) {
         setError('Please enter a valid quantity to remove (minimum 1 unit)')
         return
@@ -117,7 +118,7 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
       }
     }
 
-    if (mode === 'CORRECTION' && numCorrected < 0) {
+    if (mode === 'RECONCILIATION' && numCorrected < 0) {
       setError('Reconciled stock quantity cannot be negative.')
       return
     }
@@ -226,7 +227,7 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
               <label className="block text-[11px] font-black uppercase tracking-wider text-gray-700 mb-1.5">
                 Select Adjustment Type <span className="text-red-500">*</span>
               </label>
-              <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+              <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                 {/* RESTOCK TAB */}
                 <button
                   type="button"
@@ -242,44 +243,59 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
                   <span className="text-[9px] font-semibold text-gray-500">+ Add Units</span>
                 </button>
 
-                {/* REMOVE TAB */}
+                {/* CUSTOMER RETURN TAB */}
                 <button
                   type="button"
-                  onClick={() => { setMode('REMOVE'); setError('') }}
+                  onClick={() => { setMode('CUSTOMER_RETURN'); setError('') }}
                   className={`flex flex-col items-center justify-center p-2 sm:p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
-                    mode === 'REMOVE'
+                    mode === 'CUSTOMER_RETURN'
+                      ? 'bg-blue-50 border-blue-500 text-blue-900 shadow-sm ring-2 ring-blue-500/20'
+                      : 'bg-[#FBFAF6] border-gray-200 text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <PlusCircle size={17} className={mode === 'CUSTOMER_RETURN' ? 'text-blue-600' : 'text-gray-400'} />
+                  <span className="text-xs font-black mt-0.5">Customer Return</span>
+                  <span className="text-[9px] font-semibold text-gray-500">+ Add Units</span>
+                </button>
+
+                {/* LOSS / DAMAGED TAB */}
+                <button
+                  type="button"
+                  onClick={() => { setMode('LOSS_DAMAGE'); setError('') }}
+                  className={`flex flex-col items-center justify-center p-2 sm:p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
+                    mode === 'LOSS_DAMAGE'
                       ? 'bg-rose-50 border-rose-500 text-rose-900 shadow-sm ring-2 ring-rose-500/20'
                       : 'bg-[#FBFAF6] border-gray-200 text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  <MinusCircle size={17} className={mode === 'REMOVE' ? 'text-rose-600' : 'text-gray-400'} />
-                  <span className="text-xs font-black mt-0.5">Remove Stock</span>
+                  <MinusCircle size={17} className={mode === 'LOSS_DAMAGE' ? 'text-rose-600' : 'text-gray-400'} />
+                  <span className="text-xs font-black mt-0.5">Loss / Damaged</span>
                   <span className="text-[9px] font-semibold text-gray-500">- Deduct Units</span>
                 </button>
 
-                {/* RECONCILE TAB */}
+                {/* RECONCILIATION TAB */}
                 <button
                   type="button"
-                  onClick={() => { setMode('CORRECTION'); setError('') }}
+                  onClick={() => { setMode('RECONCILIATION'); setError('') }}
                   className={`flex flex-col items-center justify-center p-2 sm:p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
-                    mode === 'CORRECTION'
+                    mode === 'RECONCILIATION'
                       ? 'bg-amber-50 border-[#D4AF37] text-amber-950 shadow-sm ring-2 ring-[#D4AF37]/30'
                       : 'bg-[#FBFAF6] border-gray-200 text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  <Target size={17} className={mode === 'CORRECTION' ? 'text-[#D4AF37]' : 'text-gray-400'} />
+                  <Target size={17} className={mode === 'RECONCILIATION' ? 'text-[#D4AF37]' : 'text-gray-400'} />
                   <span className="text-xs font-black mt-0.5">Reconciliation</span>
                   <span className="text-[9px] font-semibold text-gray-500">Set Exact Count</span>
                 </button>
               </div>
             </div>
 
-            {/* MODE 1: RESTOCK INPUT */}
-            {mode === 'RESTOCK' && (
+            {/* MODE 1: RESTOCK / CUSTOMER RETURN INPUT */}
+            {(mode === 'RESTOCK' || mode === 'CUSTOMER_RETURN') && (
               <div className="space-y-2.5 bg-emerald-50/60 border border-emerald-200 p-3 sm:p-3.5 rounded-xl">
                 <div>
                   <label className="block text-[11px] font-black uppercase tracking-wider text-emerald-900 mb-1">
-                    Quantity to Add (Restock) <span className="text-red-500">*</span>
+                    Quantity to Add ({mode === 'CUSTOMER_RETURN' ? 'Customer Return' : 'Restock'}) <span className="text-red-500">*</span>
                   </label>
                   <div className="flex items-center gap-2">
                     <button
@@ -338,51 +354,9 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
               </div>
             )}
 
-            {/* MODE 2: REMOVE STOCK INPUT */}
-            {mode === 'REMOVE' && (
+            {/* MODE 2: LOSS / DAMAGED INPUT */}
+            {mode === 'LOSS_DAMAGE' && (
               <div className="space-y-2.5 bg-rose-50/60 border border-rose-200 p-3 sm:p-3.5 rounded-xl">
-                {/* Removal Reason Sub-picker */}
-                <div>
-                  <label className="block text-[11px] font-black uppercase tracking-wider text-rose-900 mb-1">
-                    Removal Reason <span className="text-red-500">*</span>
-                  </label>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => setRemoveReason('DAMAGE')}
-                      className={`py-1.5 px-1.5 rounded-lg text-[11px] font-black border transition-all ${
-                        removeReason === 'DAMAGE'
-                          ? 'bg-rose-600 text-white border-rose-600 shadow-sm'
-                          : 'bg-white text-rose-900 border-rose-200 hover:bg-rose-100'
-                      }`}
-                    >
-                      Damaged / Defect
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setRemoveReason('RETURN')}
-                      className={`py-1.5 px-1.5 rounded-lg text-[11px] font-black border transition-all ${
-                        removeReason === 'RETURN'
-                          ? 'bg-rose-600 text-white border-rose-600 shadow-sm'
-                          : 'bg-white text-rose-900 border-rose-200 hover:bg-rose-100'
-                      }`}
-                    >
-                      Vendor Return
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setRemoveReason('CORRECTION')}
-                      className={`py-1.5 px-1.5 rounded-lg text-[11px] font-black border transition-all ${
-                        removeReason === 'CORRECTION'
-                          ? 'bg-rose-600 text-white border-rose-600 shadow-sm'
-                          : 'bg-white text-rose-900 border-rose-200 hover:bg-rose-100'
-                      }`}
-                    >
-                      Lost / Shrinkage
-                    </button>
-                  </div>
-                </div>
-
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="block text-[11px] font-black uppercase tracking-wider text-rose-900">
@@ -460,7 +434,7 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
             )}
 
             {/* MODE 3: RECONCILIATION COUNT INPUT */}
-            {mode === 'CORRECTION' && (
+            {mode === 'RECONCILIATION' && (
               <div className="space-y-2.5 bg-amber-50/60 border border-[#E8D399] p-3 sm:p-3.5 rounded-xl">
                 <div>
                   <label className="block text-[11px] font-black uppercase tracking-wider text-amber-950 mb-1">
@@ -546,8 +520,10 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
                 placeholder={
                   mode === 'RESTOCK'
                     ? 'e.g. Received new stock shipment / batch delivery'
-                    : mode === 'REMOVE'
-                    ? 'e.g. Broken packaging, water damage, supplier return'
+                    : mode === 'CUSTOMER_RETURN'
+                    ? 'e.g. Customer returned items, refund issued'
+                    : mode === 'LOSS_DAMAGE'
+                    ? 'e.g. Broken packaging, water damage, lost in storage'
                     : 'e.g. Physical inventory count reconciliation'
                 }
                 value={note}
@@ -570,9 +546,9 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
               type="submit"
               disabled={submitting || delta === 0}
               className={`flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-black transition-all shadow-md disabled:opacity-50 cursor-pointer ${
-                mode === 'RESTOCK'
+                mode === 'RESTOCK' || mode === 'CUSTOMER_RETURN'
                   ? 'bg-[#7A1220] border border-[#D4AF37] text-[#D4AF37] hover:bg-[#1A1A1A]'
-                  : mode === 'REMOVE'
+                  : mode === 'LOSS_DAMAGE'
                   ? 'bg-rose-700 text-white hover:bg-rose-800 border border-rose-800'
                   : 'bg-[#7A1220] border border-[#D4AF37] text-[#D4AF37] hover:bg-[#1A1A1A]'
               }`}
@@ -587,7 +563,9 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
                   <CheckCircle2 size={15} />
                   {mode === 'RESTOCK'
                     ? `Confirm Restock (+${numAdd} Units)`
-                    : mode === 'REMOVE'
+                    : mode === 'CUSTOMER_RETURN'
+                    ? `Confirm Return (+${numAdd} Units)`
+                    : mode === 'LOSS_DAMAGE'
                     ? `Confirm Removal (-${numRemove} Units)`
                     : `Confirm Reconciliation (${effectiveNewStock} Units)`}
                 </>
