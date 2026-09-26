@@ -1,5 +1,5 @@
 import { formatInvoiceNo } from './retail'
-import { BRAND_EN, BRAND_INSTAGRAM, BRAND_INSTAGRAM_URL, BRAND_PRIMARY_PHONE_DISPLAY, BRAND_PRODUCTION_DOMAIN, BRAND_WEBSITE } from './brand'
+import { BRAND_EN, BRAND_PRIMARY_PHONE_DISPLAY, BRAND_PRODUCTION_DOMAIN, BRAND_WEBSITE, getInstagramUrls } from './brand'
 
 export type WhatsAppLineItem = {
   name: string
@@ -24,6 +24,7 @@ export type BuildWhatsAppMessageInput = {
   shipping?: number
   gstAmount?: number
   total?: number
+  branch?: string // POS1 or POS2
 }
 
 export type AdvanceDepositWhatsAppInput = {
@@ -56,6 +57,10 @@ export const buildProfessionalWhatsAppMessage = (input: BuildWhatsAppMessageInpu
     ? input.items.map(item => `• ${item.name} (x${item.qty}) - ₹ ${Number(item.lineTotal || 0).toFixed(2)}`).join('\n')
     : ''
 
+  // Get branch-specific Instagram URLs (POS1 only, POS2 has none)
+  const instagramSection = getInstagramUrls(input.branch)
+  const instagramText = instagramSection ? `\n📷 *Follow us on Instagram:*\n${instagramSection}` : ''
+
   return `✨ *${BRAND_EN}* ✨
 🛍️ *Official Purchase Invoice & Receipt* 🛍️
 
@@ -72,8 +77,7 @@ ${itemsText ? `📦 *ITEMS ORDERED:*\n${itemsText}\n\n` : ''}📄 *View & Downlo
 🌐 *Visit Our Official Website:*
 👉 ${BRAND_WEBSITE}
 
-📞 *Shop Contact:* ${BRAND_PRIMARY_PHONE_DISPLAY}
-📷 *Follow us on Instagram:* ${BRAND_INSTAGRAM_URL}
+📞 *Shop Contact:* ${BRAND_PRIMARY_PHONE_DISPLAY}${instagramText}
 
 Thank you, and visit us again! ✨`
 }

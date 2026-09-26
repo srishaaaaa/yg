@@ -76,7 +76,20 @@ export const BRAND_WHATSAPP_LINK = `https://wa.me/${BRAND_PRIMARY_PHONE_E164}`
 
 export const BRAND_EMAIL = 'ygenterprises2000@gmail.com'
 export const BRAND_ADDRESS = '#189, N.S.C. Bose Road, (Opp. Bus Depot, Hotel Sankar Cafe Building), Chennai - 600 001'
-export const BRAND_INSTAGRAM = ''
-export const BRAND_INSTAGRAM_URL = ''
 export const BRAND_WEBSITE = 'https://ygenterprises.co.in'
 export const BRAND_LOCATION_LINK = '#'
+
+// Branch-specific Instagram URLs
+// POS1 (Wedding Cards/Bags/Jute Manufacturing) - Has Instagram presence
+// POS2 (Fireworks/Crackers) - No Instagram in communications
+export function getInstagramUrls(branch?: string): string {
+  if (branch === 'pos2') {
+    return '' // POS2: No Instagram
+  }
+  // POS1: Both Instagram handles
+  return `🎀 https://www.instagram.com/yg_enterprises001/
+🎀 https://www.instagram.com/ygenterprises7755/`
+}
+
+export const BRAND_INSTAGRAM = '' // Deprecated: use getInstagramUrls(branch)
+export const BRAND_INSTAGRAM_URL = '' // Deprecated: use getInstagramUrls(branch)

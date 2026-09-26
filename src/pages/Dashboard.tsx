@@ -992,6 +992,7 @@ export default function Dashboard() {
       couponDiscount: order.discount_amount,
       shipping: order.delivery_charge,
       total: order.total,
+      branch: branch, // Add branch for Instagram URLs (POS1 only)
     })
     return { items, subtotal, message, fileName: `Invoice-${order.invoice_no || order.id}.pdf` }
   }
@@ -2252,6 +2253,7 @@ export default function Dashboard() {
                           subtotal: normalizedItems.reduce((sum, item) => sum + item.line_total, 0),
                           total: getOrderTotal(order),
                           paymentMode: order.payment_mode || order.payment_method,
+                          branch: branch, // Add branch for Instagram URLs (POS1 only)
                         })
 
                         return (
