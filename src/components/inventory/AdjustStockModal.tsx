@@ -153,7 +153,7 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
   return createPortal(
     <div className="fixed inset-0 top-0 left-0 right-0 bottom-0 w-screen h-screen h-[100dvh] z-[9999] flex items-center justify-center bg-black/75 backdrop-blur-sm p-0 sm:p-4 overflow-hidden animate-in fade-in duration-150">
       <div className="absolute inset-0" onClick={onClose} />
-      <div className="relative z-10 bg-white rounded-none sm:rounded-3xl max-w-lg w-full h-screen h-[100dvh] sm:h-auto sm:max-h-[92vh] border-0 sm:border border-[#E8D399] shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative z-10 bg-white rounded-none sm:rounded-3xl max-w-lg w-full h-screen sm:h-auto sm:max-h-[92vh] border-0 sm:border border-[#E8D399] shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200" style={{ maxHeight: '100dvh' }}>
         {/* Header */}
         <div className="shrink-0 bg-[#7A1220] px-4 py-3 sm:px-5 sm:py-3.5 border-b border-[#D4AF37]/30 flex items-center justify-between text-white">
           <div className="flex items-center gap-2.5">
@@ -534,18 +534,18 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
           </div>
 
           {/* Fixed Footer at the bottom */}
-          <div className="shrink-0 px-4 py-3 sm:px-5 sm:py-3 bg-[#FBFAF6] border-t border-gray-200 flex items-center justify-end gap-2.5 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
+          <div className="shrink-0 px-3 py-2.5 sm:px-5 sm:py-3 bg-[#FBFAF6] border-t border-gray-200 flex items-center justify-end gap-2 min-h-14 sm:min-h-auto" style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}>
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl border border-gray-300 text-gray-700 text-xs font-bold hover:bg-gray-100 transition-colors cursor-pointer"
+              className="px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl border border-gray-300 text-gray-700 text-xs font-bold hover:bg-gray-100 transition-colors cursor-pointer touch-manipulation select-none"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting || delta === 0}
-              className={`flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-black transition-all shadow-md disabled:opacity-50 cursor-pointer ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-3 sm:px-5 py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-black transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer touch-manipulation select-none ${
                 mode === 'RESTOCK' || mode === 'CUSTOMER_RETURN'
                   ? 'bg-[#7A1220] border border-[#D4AF37] text-[#D4AF37] hover:bg-[#1A1A1A]'
                   : mode === 'LOSS_DAMAGE'
@@ -555,19 +555,31 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
             >
               {submitting ? (
                 <>
-                  <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block" />
-                  Saving...
+                  <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block" />
+                  <span className="hidden sm:inline">Saving...</span>
+                  <span className="sm:hidden">Save...</span>
                 </>
               ) : (
                 <>
-                  <CheckCircle2 size={15} />
-                  {mode === 'RESTOCK'
-                    ? `Confirm Restock (+${numAdd} Units)`
-                    : mode === 'CUSTOMER_RETURN'
-                    ? `Confirm Return (+${numAdd} Units)`
-                    : mode === 'LOSS_DAMAGE'
-                    ? `Confirm Removal (-${numRemove} Units)`
-                    : `Confirm Reconciliation (${effectiveNewStock} Units)`}
+                  <CheckCircle2 size={14} className="sm:w-4 sm:h-4 shrink-0" />
+                  <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+                    {mode === 'RESTOCK'
+                      ? `Update (+${numAdd})`
+                      : mode === 'CUSTOMER_RETURN'
+                      ? `Update (+${numAdd})`
+                      : mode === 'LOSS_DAMAGE'
+                      ? `Update (-${numRemove})`
+                      : `Update (${effectiveNewStock})`}
+                  </span>
+                  <span className="hidden sm:inline">
+                    {mode === 'RESTOCK'
+                      ? ` Restock`
+                      : mode === 'CUSTOMER_RETURN'
+                      ? ` Return`
+                      : mode === 'LOSS_DAMAGE'
+                      ? ` Removal`
+                      : ` Reconciliation`}
+                  </span>
                 </>
               )}
             </button>
