@@ -254,7 +254,20 @@ export default function DigitalInvoice() {
     setDownloadingPdf(true)
     try {
       const file = await invoicePdfFileFromElement(invoiceElementRef.current, invoice.invoice_no)
+
+      if (!file || file.size === 0) {
+        console.error('Generated PDF file is empty')
+        alert('Failed to generate PDF. Please try again.')
+        return
+      }
+
       const url = URL.createObjectURL(file)
+
+      if (!url) {
+        console.error('Failed to create object URL for PDF')
+        alert('Failed to download PDF. Please try again.')
+        return
+      }
 
       if (isIOS) {
         if (pdfWindow && !pdfWindow.closed) {
@@ -266,14 +279,21 @@ export default function DigitalInvoice() {
         const link = document.createElement('a')
         link.href = url
         link.download = file.name
+        link.style.display = 'none'
         document.body.appendChild(link)
+
+        // Trigger click and wait a bit before cleaning up
         link.click()
-        document.body.removeChild(link)
+        setTimeout(() => {
+          document.body.removeChild(link)
+          URL.revokeObjectURL(url)
+        }, 100)
       }
 
       setTimeout(() => URL.revokeObjectURL(url), 60000)
     } catch (err) {
       console.error('Failed to download invoice PDF:', err)
+      alert(`Error: ${err instanceof Error ? err.message : 'Failed to generate PDF'}`)
       if (pdfWindow && !pdfWindow.closed) {
         pdfWindow.close()
       }
@@ -365,20 +385,26 @@ export default function DigitalInvoice() {
     <div className="digital-invoice-page bg-[#f9faf6] font-sans print:bg-white print:overflow-visible print:m-0 print:p-0">
       {/* Top action bar — uses position fixed so it always works on iOS regardless of scroll context */}
       <div className="bg-[#f9faf6]/95 backdrop-blur-sm p-4 fixed top-0 left-0 right-0 z-50 print:hidden flex items-center justify-between safe-area-inset-top" style={{ paddingTop: 'max(16px, env(safe-area-inset-top))' }}>
-        <button onClick={handleBack} className="flex items-center gap-2 text-[#7A1220] hover:text-[#D4AF37] font-semibold text-sm transition-colors bg-white border border-[#E8D399] px-4 py-2 rounded-full shadow-sm cursor-pointer active:scale-95">
+        <button
+          type="button"
+          onClick={handleBack}
+          className="flex items-center gap-2 text-[#7A1220] hover:text-[#D4AF37] font-semibold text-sm transition-colors bg-white border border-[#E8D399] px-4 py-2 rounded-full shadow-sm cursor-pointer active:scale-95 touch-manipulation select-none"
+        >
           <ArrowLeft size={16} /> Back
         </button>
         <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={downloadPdf}
             disabled={downloadingPdf}
-            className="flex items-center gap-2 bg-[#7A1220] text-[#D4AF37] border border-[#D4AF37] px-4 py-2 rounded-full font-bold text-sm shadow-md hover:bg-[#1A1A1A] transition-colors cursor-pointer active:scale-95 disabled:opacity-70"
+            className="flex items-center gap-2 bg-[#7A1220] text-[#D4AF37] border border-[#D4AF37] px-4 py-2 rounded-full font-bold text-sm shadow-md hover:bg-[#1A1A1A] transition-all cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation select-none"
           >
             <Printer size={16} /> {downloadingPdf ? 'Generating...' : <><span className="hidden sm:inline">PDF Invoice</span><span className="sm:hidden">PDF</span></>}
           </button>
           <button
+            type="button"
             onClick={shareViaWhatsApp}
-            className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-full font-bold text-sm shadow-md hover:bg-emerald-700 transition-colors cursor-pointer active:scale-95"
+            className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-full font-bold text-sm shadow-md hover:bg-emerald-700 transition-colors cursor-pointer active:scale-95 touch-manipulation select-none"
           >
             <MessageCircle size={16} /> WhatsApp
           </button>
