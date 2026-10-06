@@ -95,9 +95,6 @@ export function printAdvanceReceipt(order: AdvanceOrder) {
   .balance-row { font-size: 14px; font-weight: bold; }
 </style>
 </head><body>
-<div class="c" style="margin-bottom: 6px;">
-  <img src="${order.branch === 'pos2' ? LOGO_BASE64_POS2 : LOGO_BASE64_POS1}" style="width: 50px; height: 50px; object-fit: contain; margin: 0 auto; display: block;" alt="YG Logo" />
-</div>
 <div class="c big">${esc(BRAND_EN)}</div>
 <div class="c" style="font-size:10px;color:#555;">${esc(getBranchProfile(order.branch).address)}</div>
 <div class="c" style="font-size:10px;color:#555;">${esc(getBranchProfile(order.branch).phone)}</div>

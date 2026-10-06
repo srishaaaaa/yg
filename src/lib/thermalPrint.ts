@@ -1,10 +1,8 @@
 import { BRAND_EN } from './brand'
-import { LOGO_BASE64_POS1, LOGO_BASE64_POS2 } from './logoBase64'
 import { formatCurrency, formatInvoiceNo } from './retail'
 import { formatPhoneForDisplay } from './phone'
 import type { PosBranch } from '../store/store'
 import { getBranchProfile } from './branchProfile'
-import { useSettingsStore } from '../store/store'
 import { splitGst } from './gst'
 
 export interface ThermalReceiptData {
@@ -38,9 +36,6 @@ export interface ThermalReceiptData {
 export function printThermalReceipt(data: ThermalReceiptData) {
   try {
     const profile = getBranchProfile(data.branch)
-    // Embedded logo prints instantly; a custom logo from Store Settings is used when one is uploaded
-    const customLogo = useSettingsStore.getState().settingsByBranch[data.branch === 'pos2' ? 'pos2' : 'pos1']?.logoUrl
-    const logoSrc = customLogo || (data.branch === 'pos2' ? LOGO_BASE64_POS2 : LOGO_BASE64_POS1)
     const gst = splitGst(data.totalGst || 0, data.subtotal - (data.couponDiscount || 0) - (data.manualDiscount || 0), data.gstRate)
     // Create an isolated print iframe protected from third-party extension observers
     const iframe = document.createElement('iframe')
@@ -103,7 +98,6 @@ export function printThermalReceipt(data: ThermalReceiptData) {
       </head>
       <body>
         <div class="text-center mb-2">
-          <img src="${logoSrc}" style="width: 64px; height: 64px; object-fit: contain; margin: 0 auto 8px auto; display: block;" alt="YG Logo" />
           <div class="font-bold" style="font-size: 16px; letter-spacing: 2px;">${data.storeName || BRAND_EN}</div>
           <div style="font-size: 10px; margin-top: 2px;">${data.storeAddress || profile.address}</div>
           <div class="mt-1" style="font-size: 10px;">Ph: ${data.storePhone || profile.phone}</div>
