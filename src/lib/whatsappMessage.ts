@@ -183,7 +183,25 @@ const paymentLines = (title: string, amount: number, method?: string | null) => 
   return [`${title}: ${rupees(amount)}${label ? ` (${label})` : ''}`]
 }
 
+/**
+ * Fireworks (POS 2) WhatsApp message: shop name, Instagram, website, a thank-you
+ * line and the shop's WhatsApp number only. No bill or payment details, no invoice link.
+ */
+export const buildFireworksWhatsAppMessage = (branch?: string) => {
+  const profile = getBranchProfile(branch || 'pos2')
+  const lines = [
+    `✨ *${profile.name || BRAND_EN}* ✨`,
+    '',
+    `Thank you for shopping with us! 🎆 We hope you have a safe and happy celebration. Visit us again!`,
+    '',
+  ]
+  if (profile.instagramUrls) lines.push('📷 *Instagram:*', profile.instagramUrls, '')
+  lines.push('🌐 *Website:*', BRAND_WEBSITE, '', `📞 *WhatsApp:* ${profile.phone}`)
+  return lines.join('\n')
+}
+
 export const buildAdvanceCalculationWhatsAppMessage = (input: AdvanceCalculationInput) => {
+  if (String(input.branch || 'pos2').toLowerCase() === 'pos2') return buildFireworksWhatsAppMessage(input.branch)
   const profile = getBranchProfile(input.branch)
   const customerName = input.customerName?.trim() || 'Valued Customer'
   const balanceDue = Math.max(0, input.totalAmount - input.depositAmount)
@@ -227,6 +245,11 @@ export const buildAdvanceCalculationWhatsAppMessage = (input: AdvanceCalculation
 
 /** Fireworks (POS 2) bill: items, every charge/discount and the payment (with splits). No links. */
 export const buildFireworksBillWhatsAppMessage = (input: BuildWhatsAppMessageInput) => {
+  return buildFireworksWhatsAppMessage(input.branch)
+}
+
+/** Previous Fireworks bill message with the full calculation (no longer sent). */
+export const buildFireworksBillCalculationMessage = (input: BuildWhatsAppMessageInput) => {
   const profile = getBranchProfile(input.branch)
   const customerName = input.customerName?.trim() || 'Valued Customer'
   const line = '━━━━━━━━━━━━━━'
